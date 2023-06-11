@@ -22,11 +22,15 @@ export const UserAvatar: React.FC<UserAvatarProps> = (props) => {
          <RadixAvatar.Image
             src={props.imageUrl}
             alt="Colm Tuite"
-            className="h-[inherit] w-[inherit] object-cover"
+            className="h-full w-full object-cover"
          />
          <RadixAvatar.Fallback
-            className="flex h-[inherit] w-[inherit] items-center justify-center rounded-full bg-slate-800 text-white"
+            className="flex h-full w-full items-center justify-center rounded-full font-bold text-black"
             delayMs={600}
+            style={{
+               fontSize: "0.8em",
+               backgroundColor: `hsl(${Math.random() * 100}, 100%, 80%)`,
+            }}
          >
             {c0}
             {c1 ?? null}

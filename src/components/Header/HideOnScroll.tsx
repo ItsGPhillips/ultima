@@ -12,7 +12,6 @@ import {
 import useMeasure from "react-use-measure";
 
 import { mergeRefs } from "@react-aria/utils";
-import theme from "tailwindcss/defaultTheme";
 
 export const HideOnScroll = forwardRef<
    HTMLDivElement,
@@ -24,31 +23,8 @@ export const HideOnScroll = forwardRef<
 
    const isHiding = useRef(false);
 
+   
    useMotionValueEvent(scrollY, "change", () => {
-      // TODO (George): uncomment this and see if its worth it.
-      // if (scrollY.get() == 0) {
-      //    animate(
-      //       ref.current,
-      //       { height: theme.spacing["20"] },
-      //       {
-      //          ease: "linear",
-      //          duration: 0.1,
-      //          bounce: 0,
-      //       }
-      //    );
-      // } else if (isHiding.current) {
-      //    if (!isScrolledEnough) return;
-      //    animate(
-      //       ref.current,
-      //       { height: theme.spacing["12"] },
-      //       {
-      //          ease: "linear",
-      //          duration: 0.1,
-      //          bounce: 0,
-      //       }
-      //    );
-      // }
-
       if (!isScrolledEnough) return;
 
       if (scrollY.get() > scrollY.getPrevious()) {
@@ -64,6 +40,7 @@ export const HideOnScroll = forwardRef<
                   ease: "linear",
                   duration: 0.2,
                   bounce: 0,
+                  delay: 0.5,
                }
             );
          }
