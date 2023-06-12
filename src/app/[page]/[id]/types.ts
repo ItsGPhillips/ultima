@@ -1,15 +1,10 @@
-
-export type LayoutContext = {
-   children: React.ReactNode;
-   pageinfo: React.ReactNode;
-   pagebanner: React.ReactNode;
-   params: {
-      page: string[];
-   };
-};
-
-export type PageContext = {
-   params: {
-      id: string;
-   };
-};
+import { z } from "zod";
+export const LAYOUT_CTX_SCHEMA = z.object({
+   children: z.custom<React.ReactNode>(),
+   pageinfo: z.custom<React.ReactNode>(),
+   sidebar: z.custom<React.ReactNode>(),
+   params: z.object({
+      page: z.string(),
+      id: z.string(),
+   }),
+});

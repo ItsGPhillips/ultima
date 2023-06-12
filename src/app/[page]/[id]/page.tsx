@@ -1,27 +1,24 @@
-import { PropsWithChildren } from "react";
-import { PageContext } from "./types";
 import { HeaderScrollHandle } from "~/components/Header/HideOnScroll";
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
 import { Post } from "~/components/Post";
 
-import { getPathSegments } from "~/utils/server/getPathSegments";
+import { PageControls } from "~/components/PageControls";
 
-
-
-const Page = ({ params }: PageContext) => {
+const Page = ({ params }: any) => {
    const ua = userAgent({ headers: headers() });
-   const segments = getPathSegments();
    return (
-      <div>
+      <>
          {ua.device.type === "mobile" && <HeaderScrollHandle />}
-         <div className="h-10 border-2 sticky top-[var(--header-height)]"></div>
-         {Array(100)
-            .fill(null)
-            .map((_, idx) => {
-               return <Post key={idx}></Post>;
-            })}
-      </div>
+         <PageControls />
+         <div className="flex mt-1 flex-col gap-2">
+            {Array(10)
+               .fill(null)
+               .map((_, idx) => {
+                  return <Post key={idx}></Post>;
+               })}
+         </div>
+      </>
    );
 };
 

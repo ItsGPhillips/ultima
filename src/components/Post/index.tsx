@@ -7,6 +7,7 @@ import { LuMessageSquare, LuPin } from "react-icons/lu";
 import { IoShareSocial } from "react-icons/io5";
 import { RxDotsHorizontal } from "react-icons/rx";
 import Link from "next/link";
+import { SeperatorDot } from "../SeperatorDot";
 
 const PostInfo = () => {
    return (
@@ -19,7 +20,7 @@ const PostInfo = () => {
                <Link href="#" className="text-link">
                   <span className="whitespace-nowrap text-sm">My Group</span>
                </Link>
-               <span className="h-[4px] w-[4px] rounded-full bg-white/20" />
+               <SeperatorDot />
                <Link href="#" className="text-link">
                   <span className="whitespace-nowrap text-sm">u/user-name</span>
                </Link>
@@ -32,7 +33,7 @@ const PostInfo = () => {
 
 export const Post = (props: PropsWithChildren) => {
    return (
-      <div className="m-2 flex gap-2">
+      <div className="flex gap-2 isolate z-[400] mx-2 outline-[1px] hover:outline outline-white/50 rounded-md">
          <VoteButtonGroup className="mt-2 hidden flex-col gap-2 md:flex" />
          <div className="flex h-fit flex-1 flex-col gap-2 rounded-md bg-zinc-800 p-3 pb-0">
             <PostInfo />

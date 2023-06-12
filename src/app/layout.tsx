@@ -31,7 +31,7 @@ export default async function RootLayout({
                   suppressHydrationWarning
                >
                   <Header />
-                  <div className="mt-[var(--header-height)] w-full">
+                  <div className="mt-[var(--header-height)] w-full z-[500]">
                      {children}
                   </div>
                </body>

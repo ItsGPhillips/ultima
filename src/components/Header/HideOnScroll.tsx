@@ -1,7 +1,13 @@
 "use client";
 
 import { Portal } from "@radix-ui/react-portal";
-import { useScroll, useMotionValueEvent, useAnimate } from "framer-motion";
+import {
+   useScroll,
+   useMotionValueEvent,
+   useAnimate,
+   frame,
+   cancelFrame,
+} from "framer-motion";
 import {
    ComponentPropsWithRef,
    forwardRef,
@@ -20,12 +26,23 @@ export const HideOnScroll = forwardRef<
    const [ref, animate] = useAnimate();
    const { scrollY } = useScroll();
    const [isScrolledEnough, setIsScrolledEnough] = useState(false);
-
    const isHiding = useRef(false);
 
-   
-   useMotionValueEvent(scrollY, "change", () => {
+   useEffect(() => {
+      const callback = (what: any) => {
+         console.log(what);
+      };
+      frame.read(callback);
+      frame.update(callback);
+      frame.render(callback);
+      return () => cancelFrame(callback);
+   }, []);
+
+   useMotionValueEvent(scrollY, "change", async () => {
       if (!isScrolledEnough) return;
+
+      const feedControls = document.querySelector("#feed-controls");
+      const height = document.body.style.getPropertyValue("--header-height");
 
       if (scrollY.get() > scrollY.getPrevious()) {
          // Hide
@@ -43,11 +60,40 @@ export const HideOnScroll = forwardRef<
                   delay: 0.5,
                }
             );
+            if (feedControls) {
+               animate(
+                  feedControls,
+                  {
+                     top: "0px",
+                  },
+                  {
+                     ease: "linear",
+                     duration: 0.2,
+                     bounce: 0,
+                     delay: 0.5,
+                  }
+               );
+            }
          }
       } else {
          // Show
          if (isHiding.current) {
             isHiding.current = false;
+
+            if (feedControls) {
+               animate(
+                  feedControls,
+                  {
+                     top: height,
+                  },
+                  {
+                     ease: "linear",
+                     duration: 0.1,
+                     bounce: 0,
+                     delay: 0,
+                  }
+               );
+            }
             animate(
                ref.current,
                {
@@ -71,7 +117,13 @@ export const HideOnScroll = forwardRef<
    }, []);
 
    return (
-      <div ref={mergeRefs(ref, fref)} {...props}>
+      <div
+         ref={mergeRefs(ref, fref)}
+         {...props}
+         onAnimationIteration={() => {
+            console.log("iter");
+         }}
+      >
          <Portal container={portal}>
             <OffsetAnouncer setIsScrolledEnough={setIsScrolledEnough} />
          </Portal>

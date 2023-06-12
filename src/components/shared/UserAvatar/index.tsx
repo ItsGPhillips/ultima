@@ -26,7 +26,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = (props) => {
          />
          <RadixAvatar.Fallback
             className="flex h-full w-full items-center justify-center rounded-full font-bold text-black"
-            delayMs={600}
+            delayMs={0}
             style={{
                fontSize: "0.8em",
                backgroundColor: `hsl(${Math.random() * 100}, 100%, 80%)`,

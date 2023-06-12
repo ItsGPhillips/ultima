@@ -1,41 +1,55 @@
 import { cn } from "~/utils/cn";
-import { LayoutContext } from "./types";
+import { LAYOUT_CTX_SCHEMA } from "./types";
 import { headers } from "next/headers";
 import { userAgent } from "next/server";
-import Sidebar from "./@sidebar/page";
 import { PropsWithChildren } from "react";
+import { PageBanner } from "~/components/PageBanner";
 
-export default async function Layout(ctx: LayoutContext) {
+export default async function Layout(ctx: unknown) {
+   const { params, children, pageinfo, sidebar } = LAYOUT_CTX_SCHEMA.parse(ctx);
+
    const ua = userAgent({ headers: headers() });
    const isTouchDevice = /mobile|tablet/.test(ua.device.type ?? "");
+   const isMobileDevice = ua.device.type === "mobile";
 
    return (
-      <div className="">
-         <div className="w-full border-2 h-60 shrink-0 sticky"></div>
+      <>
+         <PageBanner title={params.id} />
          <div
-            className="group relative flex"
+            className="group relative flex flex-row items-stretch justify-center"
             data-touch-device={isTouchDevice}
             data-device-type={ua.device.type}
          >
-            <FeedContainer>{ctx.children}</FeedContainer>
-            {ua.device.type === "mobile" ? null : <Sidebar />}
+            <div
+               className={cn(
+                  "hidden tmd:block",
+                  "sticky top-[var(--header-height)] h-full"
+               )}
+            >
+               {pageinfo}
+            </div>
+            <FeedContainer>{children}</FeedContainer>
+            <div
+               className={cn(
+                  "sticky hidden txl:block",
+                  "top-[var(--header-height)] h-[500px] shrink"
+               )}
+            >
+               {sidebar}
+            </div>
          </div>
-      </div>
+      </>
    );
 }
 
 const FeedContainer = (props: PropsWithChildren) => {
    const ua = userAgent({ headers: headers() });
-   const tabletStyles = cn(
-      "flex flex-col",
-      "basis-full basis-2/3 txl:basis-3/4 grow-0 shrink-0"
-   );
    return (
       <div
-         className={cn("h-[2000px] max-w-full", {
+         className={cn("txl:max-w-[50%]", {
             "basis-full": ua.device.type === "mobile",
-            [`${tabletStyles}`]: ua.device.type === "tablet",
-            "a basis-full": ua.device.type === "desktop",
+            "flex flex-col": ua.device.type === "tablet",
+            _: ua.device.type === undefined,
          })}
       >
          {props.children}
