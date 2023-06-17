@@ -1,3 +1,5 @@
+"use client"
+
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import * as React from "react";
 import type { AriaListBoxOptions } from "@react-aria/listbox";

@@ -7,10 +7,15 @@
  * need to use are documented accordingly near the end.
  */
 
-import { initTRPC } from "@trpc/server";
+import { getAuth } from "@clerk/nextjs/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
+import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
+import { cookies } from "next/headers";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { env } from "~/env.mjs";
 
 /**
  * 1. CONTEXT
@@ -20,8 +25,9 @@ import { ZodError } from "zod";
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 
-type CreateContextOptions = Record<string, never>;
-
+type CreateContextOptions = {
+   auth: ReturnType<typeof getAuth>;
+};
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
  * it from here.
@@ -32,8 +38,10 @@ type CreateContextOptions = Record<string, never>;
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-const createInnerTRPCContext = (_opts: CreateContextOptions) => {
-  return {};
+export const createInnerTRPCContext = (opts: CreateContextOptions) => {
+   return {
+      auth: opts.auth,
+   };
 };
 
 /**
@@ -42,8 +50,9 @@ const createInnerTRPCContext = (_opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (_opts: CreateNextContextOptions) => {
-  return createInnerTRPCContext({});
+export const createTRPCContext = (opts: CreateNextContextOptions) => {
+   const auth = getAuth(opts.req, { secretKey: env.CLERK_SECRET_KEY });
+   return createInnerTRPCContext({ auth});
 };
 
 /**
@@ -55,17 +64,17 @@ export const createTRPCContext = (_opts: CreateNextContextOptions) => {
  */
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter({ shape, error }) {
-    return {
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    };
-  },
+   transformer: superjson,
+   errorFormatter({ shape, error }) {
+      return {
+         ...shape,
+         data: {
+            ...shape.data,
+            zodError:
+               error.cause instanceof ZodError ? error.cause.flatten() : null,
+         },
+      };
+   },
 });
 
 /**
@@ -89,4 +98,5 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure;
+export const procedure = t.procedure;
+export const middleware = t.middleware;

@@ -29,7 +29,7 @@ export const VoteButton = forwardRef<
    const state = useToggleState(props);
    const { buttonProps } = useToggleButton(
       {
-         onPressChange() {
+         onPressEnd() {
             animate(
                ref.current,
                {

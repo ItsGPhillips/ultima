@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react";
 import type { AriaSelectProps } from "@react-types/select";
 import { useSelectState } from "react-stately";

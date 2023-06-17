@@ -1,5 +1,4 @@
 import { currentUser } from "@clerk/nextjs/server";
-import { UserAvatar } from "../shared/UserAvatar";
 import { HideOnScroll } from "./HideOnScroll";
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
@@ -7,20 +6,20 @@ import { cn } from "~/utils/cn";
 
 export const Header = async () => {
    const user = await currentUser();
-
    const ua = userAgent({ headers: headers() });
    const isTouchDevice = /mobile|tablet/.test(ua.device.type ?? "");
-
-   console.log(ua.device.type, isTouchDevice);
 
    let content;
    if (user) {
       const name = `${user.firstName} ${user.lastName}`;
       content = (
          <header className={cn("mx-4 h-full w-[inherit]")}>
-            <div className="float-right flex h-full items-center">
-               <span className="mr-2 hidden sm:block">{name}</span>
-               <UserAvatar name={name} imageUrl={user.imageUrl} />
+            <div
+               className="float-right flex h-full items-center"
+               suppressHydrationWarning
+            >
+               <span className="mr-2 hidden sm:block">{user.username}</span>
+               {/* <UserAvatar name={name} imageUrl={user.imageUrl} /> */}
             </div>
          </header>
       );

@@ -39,8 +39,7 @@ export const PageBanner = (props: { title: string }) => {
                "sm:w-[670px] tmd:hidden md:w-[717px] md:pb-2 md:pl-14"
             )}
          >
-            Programmer Humor
-            {/* {props.title} */}
+            {props.title}
          </h1>
       </div>
    );

@@ -4,7 +4,8 @@ export const LAYOUT_CTX_SCHEMA = z.object({
    pageinfo: z.custom<React.ReactNode>(),
    sidebar: z.custom<React.ReactNode>(),
    params: z.object({
-      page: z.string(),
-      id: z.string(),
+      slug: z.string(),
    }),
 });
+
+export type LayoutContext = z.infer<typeof LAYOUT_CTX_SCHEMA>;

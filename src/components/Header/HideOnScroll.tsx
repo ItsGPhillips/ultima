@@ -28,16 +28,6 @@ export const HideOnScroll = forwardRef<
    const [isScrolledEnough, setIsScrolledEnough] = useState(false);
    const isHiding = useRef(false);
 
-   useEffect(() => {
-      const callback = (what: any) => {
-         console.log(what);
-      };
-      frame.read(callback);
-      frame.update(callback);
-      frame.render(callback);
-      return () => cancelFrame(callback);
-   }, []);
-
    useMotionValueEvent(scrollY, "change", async () => {
       if (!isScrolledEnough) return;
 
