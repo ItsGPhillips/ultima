@@ -2,7 +2,6 @@
 
 import { User } from "@clerk/nextjs/dist/types/server";
 import { useState, useTransition } from "react";
-import { testFn } from "./actions";
 
 const Page = () => {
    const [_, transition] = useTransition();
@@ -12,7 +11,6 @@ const Page = () => {
          <button
             onClick={() => {
                transition(async () => {
-                  setUser(await testFn());
                });
             }}
          >

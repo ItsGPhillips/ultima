@@ -2,9 +2,10 @@ import "./global.scss";
 import { Roboto } from "next/font/google";
 import { cn } from "~/utils/cn";
 import { SSRProvider } from "~/components/providers/SSRProvider";
-import { ClerkProvider } from "@clerk/nextjs";
 import { Header } from "~/components/Header";
 import { TRPCClientProvider } from "~/components/providers/TRPCProvider";
+import { CSRFProvider } from "./CSRFProvider";
+import { cookies, headers } from "next/headers";
 const font = Roboto({ weight: ["300", "400", "700"], subsets: ["latin"] });
 
 export const metadata = {
@@ -13,9 +14,11 @@ export const metadata = {
 };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
+   const csrfToken = headers().get("X-CSRF-Token") ?? null;
    return (
       <SSRProvider>
-         <ClerkProvider>
+         {/* <ClerkProvider> */}
+         <CSRFProvider csrfToken={csrfToken}>
             <html lang="en" suppressHydrationWarning>
                <body
                   className={cn(
@@ -32,7 +35,8 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
                   </TRPCClientProvider>
                </body>
             </html>
-         </ClerkProvider>
+            {/* </ClerkProvider> */}
+         </CSRFProvider>
       </SSRProvider>
    );
 };

@@ -1,10 +1,12 @@
 import { cn } from "~/utils/cn";
-import { currentUser } from "@clerk/nextjs";
 import { SubscribeButton } from "./SubscribeButton";
 import { CreatePostButton } from "./CreatePostButton";
+import { auth } from "~/server/lucia";
+import { cookies } from "next/headers";
 
 export const PageControls = async (props: { groupId: string }) => {
-   const user = await currentUser();
+   const authRequest = auth.handleRequest({ cookies });
+   const { user } = await authRequest.validateUser();
 
    return (
       <div
@@ -14,10 +16,8 @@ export const PageControls = async (props: { groupId: string }) => {
             "sticky top-[var(--header-height)] isolate z-[450] flex h-14 items-center bg-zinc-900 py-2"
          )}
       >
-         <CreatePostButton groupId={props.groupId} userId={user?.id}/>
-         {!!user?.id && (
-            <SubscribeButton groupId={props.groupId} />
-         )}
+         <CreatePostButton groupId={props.groupId} userId={user?.id} />
+         {!!user?.id && <SubscribeButton groupId={props.groupId} />}
       </div>
    );
 };

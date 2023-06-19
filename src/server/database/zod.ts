@@ -1,9 +1,21 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { group, post } from "./schema/user";
+import { Table, TableConfig } from "drizzle-orm";
+import { user, session, key } from "./schema/auth";
+import { group } from "./schema/page";
+import { post, profile } from "./schema/user";
 
-export const PAGE_TABLE_SCHEMA = createSelectSchema(group);
+const makeSchemas = <T extends TableConfig>(table: Table<T>) => ({
+   insert: createInsertSchema(table),
+   select: createSelectSchema(table),
+});
 
-export const POST_TABLE_SCHEMA = {
-   insert: createInsertSchema(post),
-   select: createSelectSchema(post),
-};
+export const PAGE_TABLE_SCHEMA = makeSchemas(group);
+export const POST_TABLE_SCHEMA = makeSchemas(post);
+export const PROFILE_TABLE_SCHEMA = makeSchemas(profile);
+
+
+export namespace Auth {
+   export const USER_TABLE_SCHEMA = makeSchemas(user);
+   export const SESSION_TABLE_SCHEMA = makeSchemas(session);
+   export const KEY_TABLE_SCHEMA = makeSchemas(key);
+}

@@ -1,5 +1,7 @@
 import { InferModel } from "drizzle-orm";
-import { group, post, subscription } from "./schema/user";
+import { post, subscription } from "./schema/user";
+import { key, session, user } from "./schema/auth";
+import { group } from "./schema/page";
 
 export type Post<T extends "insert" | "select" = "select"> = InferModel<
    typeof post,
@@ -15,3 +17,18 @@ export type Subscription<T extends "insert" | "select" = "select"> = InferModel<
    typeof subscription,
    T
 >;
+
+export namespace Auth {
+   export type Key<T extends "insert" | "select" = "select"> = InferModel<
+      typeof key,
+      T
+   >;
+   export type Session<T extends "insert" | "select" = "select"> = InferModel<
+      typeof session,
+      T
+   >;
+   export type User<T extends "insert" | "select" = "select"> = InferModel<
+      typeof user,
+      T
+   >;
+}

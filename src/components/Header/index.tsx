@@ -1,11 +1,24 @@
-import { currentUser } from "@clerk/nextjs/server";
 import { HideOnScroll } from "./HideOnScroll";
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
 import { cn } from "~/utils/cn";
+import { getBaseUrl } from "~/utils/getBaseUrl";
+import { PROFILE_TABLE_SCHEMA } from "~/server/database/zod";
+import { SignInButton } from "./SignInButton";
+
+const getCurrentUser = async () => {
+   const res = await fetch(`${getBaseUrl()}/api/user`, {
+      method: "GET",
+      headers: headers(),
+   });
+   const data = await res.json();
+   console.log(data)
+   return PROFILE_TABLE_SCHEMA.select.nullable().parse(data);
+};
 
 export const Header = async () => {
-   const user = await currentUser();
+   const user = await getCurrentUser();
+
    const ua = userAgent({ headers: headers() });
    const isTouchDevice = /mobile|tablet/.test(ua.device.type ?? "");
 
@@ -15,10 +28,11 @@ export const Header = async () => {
       content = (
          <header className={cn("mx-4 h-full w-[inherit]")}>
             <div
-               className="float-right flex h-full items-center"
+               className="float-right flex h-full items-center gap-4"
                suppressHydrationWarning
             >
-               <span className="mr-2 hidden sm:block">{user.username}</span>
+               {name}
+               <span className="mr-2 hidden sm:block">{user.handle}</span>
                {/* <UserAvatar name={name} imageUrl={user.imageUrl} /> */}
             </div>
          </header>
@@ -29,7 +43,9 @@ export const Header = async () => {
             className={cn(
                "z-[600] h-[var(--header-height)] w-full bg-green-600"
             )}
-         ></header>
+         >
+            <SignInButton />
+         </header>
       );
    }
    const className =

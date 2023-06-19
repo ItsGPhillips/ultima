@@ -1,20 +1,39 @@
 import {
-   pgTable,
    text,
    timestamp,
-   index,
    boolean,
    varchar,
    primaryKey,
+   pgSchema,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { CUID_LENGTH } from "~/utils/cuid";
+import { user } from "./auth";
+import { group } from "./page";
 
 //==================================================================
 
-export const profile = pgTable("profile", {
-   handle: text("handle").notNull().primaryKey(),
-   clerkId: text("clerk_user_id").notNull(),
+export const USER_SCHEMA = pgSchema("user");
+
+//==================================================================
+
+export const profile = USER_SCHEMA.table("profile", {
+   handle: text("handle")
+      .notNull()
+      .primaryKey()
+      .references(() => user.handle, {
+         onDelete: "cascade",
+         onUpdate: "cascade",
+      }),
+   firstName: text("first_name").notNull(),
+   lastName: text("last_name"),
+   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .notNull()
+      .defaultNow(),
+   //TODO
+   // - images
+   // - age
+   // - other data.
 });
 
 export const profileRef = relations(profile, ({ many }) => ({
@@ -23,44 +42,7 @@ export const profileRef = relations(profile, ({ many }) => ({
 
 //==================================================================
 
-export const group = pgTable("group", {
-   id: text("id").notNull().primaryKey(),
-   name: text("name").notNull(),
-   createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-   description: text("description").notNull().default(""),
-   isPrivate: boolean("is_private").notNull().default(false),
-});
-
-export const pageRel = relations(group, ({ many }) => ({
-   badges: many(groupBadge),
-}));
-
-//==================================================================
-
-export const groupBadge = pgTable(
-   "group_badge",
-   {
-      groupId: text("group_id").notNull(),
-      name: text("name").notNull(),
-   },
-   (self) => ({
-      pk: primaryKey(self.groupId, self.name),
-      pageIdx: index("badge_page_idx").on(self.groupId),
-   })
-);
-
-export const pageBadgeRel = relations(groupBadge, ({ one }) => ({
-   group: one(group, {
-      fields: [groupBadge.groupId],
-      references: [group.id],
-   }),
-}));
-
-//==================================================================
-
-export const post = pgTable("post", {
+export const post = USER_SCHEMA.table("post", {
    id: varchar("id", { length: CUID_LENGTH }).primaryKey(),
    groupId: text("group_id")
       .notNull()
@@ -91,7 +73,7 @@ export const postRel = relations(post, ({ one }) => ({
 
 //==================================================================
 
-export const postVotes = pgTable(
+export const postVotes = USER_SCHEMA.table(
    "post_votes",
    {
       postId: varchar("post_id", { length: CUID_LENGTH })
@@ -127,7 +109,7 @@ export const postVotesRel = relations(postVotes, ({ one }) => ({
 
 //==================================================================
 
-export const subscription = pgTable(
+export const subscription = USER_SCHEMA.table(
    "subscription",
    {
       groupId: text("page_id")

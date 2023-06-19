@@ -1,12 +1,141 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "089d761c-8694-4e1e-9ca1-34873268cfa4",
+  "id": "ec9b73b9-83ed-4f9b-83a2-70081a8870eb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "key": {
+      "name": "key",
+      "schema": "auth",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "primary_key": {
+          "name": "primary_key",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hashed_password": {
+          "name": "hashed_password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires": {
+          "name": "expires",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "key_user_id_user_id_fk": {
+          "name": "key_user_id_user_id_fk",
+          "tableFrom": "key",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {}
+    },
+    "session": {
+      "name": "session",
+      "schema": "auth",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(128)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active_expires": {
+          "name": "active_expires",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idle_expires": {
+          "name": "idle_expires",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "session_user_id_user_id_fk": {
+          "name": "session_user_id_user_id_fk",
+          "tableFrom": "session",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {}
+    },
+    "user": {
+      "name": "user",
+      "schema": "auth",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(15)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "handle": {
+          "name": "handle",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "handle_idx": {
+          "name": "handle_idx",
+          "columns": [
+            "handle"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {}
+    },
     "group": {
       "name": "group",
-      "schema": "",
+      "schema": "page",
       "columns": {
         "id": {
           "name": "id",
@@ -48,7 +177,7 @@
     },
     "group_badge": {
       "name": "group_badge",
-      "schema": "",
+      "schema": "page",
       "columns": {
         "group_id": {
           "name": "group_id",
@@ -85,7 +214,7 @@
     },
     "post": {
       "name": "post",
-      "schema": "",
+      "schema": "user",
       "columns": {
         "id": {
           "name": "id",
@@ -158,7 +287,7 @@
     },
     "post_votes": {
       "name": "post_votes",
-      "schema": "",
+      "schema": "user",
       "columns": {
         "post_id": {
           "name": "post_id",
@@ -239,7 +368,7 @@
     },
     "profile": {
       "name": "profile",
-      "schema": "",
+      "schema": "user",
       "columns": {
         "handle": {
           "name": "handle",
@@ -247,20 +376,47 @@
           "primaryKey": true,
           "notNull": true
         },
-        "clerk_user_id": {
-          "name": "clerk_user_id",
+        "first_name": {
+          "name": "first_name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "profile_handle_user_handle_fk": {
+          "name": "profile_handle_user_handle_fk",
+          "tableFrom": "profile",
+          "tableTo": "user",
+          "columnsFrom": [
+            "handle"
+          ],
+          "columnsTo": [
+            "handle"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {}
     },
     "subscription": {
       "name": "subscription",
-      "schema": "",
+      "schema": "user",
       "columns": {
         "page_id": {
           "name": "page_id",
@@ -323,7 +479,11 @@
     }
   },
   "enums": {},
-  "schemas": {},
+  "schemas": {
+    "auth": "auth",
+    "page": "page",
+    "user": "user"
+  },
   "_meta": {
     "schemas": {},
     "tables": {},

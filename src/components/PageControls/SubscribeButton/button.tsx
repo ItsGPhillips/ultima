@@ -7,6 +7,8 @@ import { forwardRef, useRef } from "react";
 import { AriaButtonProps, mergeProps, useButton } from "react-aria";
 import { cn } from "~/utils/cn";
 import { trpc } from "~/utils/trpc";
+import { useToggleSubscriptionMutation } from "~/hooks/mutations/useToggleSubscriptionMutation";
+import { useIsSubscribedQuery } from "~/hooks/queries/useIsSubscribedQuery";
 
 export type SubscribeButtonProps = AriaButtonProps<"button"> & {
    groupId: string;
@@ -21,51 +23,61 @@ const useSubscribeButtonQuery = (data: {
    initialData: boolean;
    pageId: string;
 }) => {
-   const routeQueryKey = getQueryKey(trpc.pages.getIsSubscribed);
-   const client = useQueryClient();
-
-   const { data: isSubscribed, isFetching } =
-      trpc.pages.getIsSubscribed.useQuery(
-         {
-            pageId: data.pageId,
-         },
-         {
-            initialData: data.initialData,
-            refetchOnMount: false,
-            refetchOnWindowFocus: false,
-         }
-      );
-
-   const { mutate: toggleSubscription } =
-      trpc.pages.toggleSubscription.useMutation({
-         onMutate: async (input) => {
-            const queryKey = getQueryKey(
-               trpc.pages.getIsSubscribed,
-               input,
-               "query"
-            );
-            await client.cancelQueries({ queryKey });
-            const prev = client.getQueryState(queryKey);
-            client.setQueryData(queryKey, !prev?.data);
-
-            return { prev };
-         },
-         onError: (_err, input, ctx) => {
-            const queryKey = getQueryKey(
-               trpc.pages.getIsSubscribed,
-               input,
-               "query"
-            );
-
-            client.setQueryData(queryKey, ctx?.prev?.data);
-         },
-         onSettled: () => {
-            client.invalidateQueries(routeQueryKey);
-         },
-      });
-
+   const { data: isSubscribed, isFetching } = useIsSubscribedQuery(data);
+   const { mutate: toggleSubscription } = useToggleSubscriptionMutation(
+      data.pageId
+   );
    return { isSubscribed, isFetching, toggleSubscription };
 };
+// const useSubscribeButtonQuery = (data: {
+//    initialData: boolean;
+//    pageId: string;
+// }) => {
+//    const routeQueryKey = getQueryKey(trpc.pages.getIsSubscribed);
+//    const client = useQueryClient();
+
+//    const { data: isSubscribed, isFetching } =
+//       trpc.pages.getIsSubscribed.useQuery(
+//          {
+//             pageId: data.pageId,
+//          },
+//          {
+//             initialData: data.initialData,
+//             refetchOnMount: false,
+//             refetchOnWindowFocus: false,
+//          }
+//       );
+
+//    const { mutate: toggleSubscription } =
+//       trpc.pages.toggleSubscription.useMutation({
+//          onMutate: async (input) => {
+//             const queryKey = getQueryKey(
+//                trpc.pages.getIsSubscribed,
+//                input,
+//                "query"
+//             );
+//             await client.cancelQueries({ queryKey });
+//             const prev = client.getQueryState(queryKey);
+//             client.setQueryData(queryKey, !prev?.data);
+
+//             return { prev };
+//          },
+//          onError: (_err, input, ctx) => {
+//             const queryKey = getQueryKey(
+//                trpc.pages.getIsSubscribed,
+//                input,
+//                "query"
+//             );
+
+//             client.setQueryData(queryKey, ctx?.prev?.data);
+//          },
+//          onSettled: () => {
+//             client.invalidateQueries(routeQueryKey);
+//          },
+//       });
+
+//    return { isSubscribed, isFetching, toggleSubscription };
+// };
 
 export const Button = forwardRef<HTMLButtonElement, SubscribeButtonProps>(
    (props, fref) => {
@@ -78,7 +90,7 @@ export const Button = forwardRef<HTMLButtonElement, SubscribeButtonProps>(
       const { buttonProps } = useButton(
          mergeProps(props, {
             onPress() {
-               toggleSubscription({ pageId: props.groupId });
+               toggleSubscription();
             },
          }),
          ref

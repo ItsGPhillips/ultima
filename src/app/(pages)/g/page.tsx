@@ -1,7 +1,17 @@
-import { redirect } from "next/navigation";
+"use client";
+
+import { testAction } from "./actions";
 
 const Page = () => {
-   redirect("/");
+   return (
+      <button
+         onClick={() => {
+            testAction();
+         }}
+      >
+         TEST ACTION
+      </button>
+   );
 };
 
 export default Page;
