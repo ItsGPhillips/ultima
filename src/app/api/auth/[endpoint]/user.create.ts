@@ -1,28 +1,25 @@
 import { sql } from "drizzle-orm";
+import { User } from "lucia-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "~/server/database";
-import { profile } from "~/server/database/schema/user";
+import { page, profile } from "~/server/database/schema";
 import { auth } from "~/server/lucia";
 import { Log } from "~/utils/log";
-
-export const PROVIDERS = {
-   EMAIL: "email",
-} as const;
 
 const CREATE_ACCOUNT_SCHEMA = z.union([
    z.object({
       id: z.literal("email"),
       password: z.string(),
       email: z.string().email(),
+      firstName: z.string(),
+      lastName: z.string().nullable(),
       handle: z.string(),
    }),
    z.object({
       id: z.literal(""),
    }),
 ]);
-
-type T = z.infer<typeof CREATE_ACCOUNT_SCHEMA>;
 
 export const createUser = async (req: NextRequest): Promise<Response> => {
    const body = CREATE_ACCOUNT_SCHEMA.safeParse(await req.json());
@@ -39,19 +36,17 @@ export const createUser = async (req: NextRequest): Promise<Response> => {
    try {
       await db.execute(sql`BEGIN TRANSACTION`);
 
-      let user;
+      let user: User;
       switch (data.id) {
          case "email": {
             // create auth user
             user = await auth.createUser({
                primaryKey: {
-                  providerId: PROVIDERS.EMAIL,
+                  providerId: data.id,
                   password: data.password,
                   providerUserId: data.email,
                },
-               attributes: {
-                  handle: data.handle,
-               },
+               attributes: {},
             });
             break;
          }
@@ -62,15 +57,39 @@ export const createUser = async (req: NextRequest): Promise<Response> => {
 
       // create associated profile
       await db.insert(profile).values({
-         handle: user.handle,
-         firstName: "John",
-         lastName: "Doe",
+         id: user.id,
+         firstName: data.firstName,
+         lastName: data.lastName,
+      });
+
+      // create associated page
+      await db.insert(page).values({
+         primaryProfileId: user.id,
+         handle: data.handle,
+         title: `${data.firstName} ${data.lastName}`,
+         allowExternal: false,
+         details:
+            "This is a test page. This page was created automatically in the user.create endpoint " +
+            "The more test I write here he better the test will be because it causes this to grow " +
+            "and the text to wrap, but whatever la la la la la this is just random text anyway. Lorem ipsum hurts my eyes",
       });
 
       await db.execute(sql`COMMIT TRANSACTION`);
 
+      const what = await db.query.user.findFirst({
+         where: (table, { eq }) => eq(table.id, user.id),
+         with: {
+            keys: true,
+            profile: {
+               with: {
+                  page: true,
+               },
+            },
+         },
+      });
+
       return NextResponse.json({
-         body: user,
+         body: what,
       });
    } catch (e) {
       await db.execute(sql`ROLLBACK TRANSACTION`);

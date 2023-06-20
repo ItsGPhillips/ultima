@@ -1,15 +1,14 @@
 import { InferModel } from "drizzle-orm";
-import { post, subscription } from "./schema/user";
 import { key, session, user } from "./schema/auth";
-import { group } from "./schema/page";
+import { post, page, subscription } from "./schema";
 
 export type Post<T extends "insert" | "select" = "select"> = InferModel<
    typeof post,
    T
 >;
 
-export type Group<T extends "insert" | "select" = "select"> = InferModel<
-   typeof group,
+export type Page<T extends "insert" | "select" = "select"> = InferModel<
+   typeof page,
    T
 >;
 

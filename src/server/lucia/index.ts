@@ -13,6 +13,10 @@ export const auth = lucia({
    env: env.NODE_ENV === "development" ? "DEV" : "PROD",
    middleware: nextjs(),
    csrfProtection: true,
+   sessionExpiresIn: {
+      activePeriod: 8.64e+7, // 24 hours
+      idlePeriod: 7.884e+9, // 3 months.
+   },
    transformDatabaseUser: (
       userData: Required<Readonly<unknown>>
    ): Auth.User => {

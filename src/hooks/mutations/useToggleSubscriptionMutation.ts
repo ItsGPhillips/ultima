@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toggleSubscription } from "~/server/actions";
+import { USER_SUBSCRIPTION } from "../queryKeys";
 
 export const useToggleSubscriptionMutation = (pageId: string) => {
-   const queryKey = ["user", "subscription", { pageId }];
+   const queryKey = [USER_SUBSCRIPTION, { pageId }];
    const client = useQueryClient();
    return useMutation(
       async () => {
@@ -15,7 +16,7 @@ export const useToggleSubscriptionMutation = (pageId: string) => {
             client.setQueryData(queryKey, !prev?.data);
             return { prev };
          },
-         onError: (_err, input, ctx) => {
+         onError: (_err, _input, ctx) => {
             client.setQueryData(queryKey, ctx?.prev?.data);
          },
          onSettled: () => {

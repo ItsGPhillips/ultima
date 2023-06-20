@@ -7,14 +7,14 @@ import { IoShareSocial } from "react-icons/io5";
 import { RxDotsHorizontal } from "react-icons/rx";
 import Link from "next/link";
 import { SeperatorDot } from "../shared/SeperatorDot";
-import { Group, Post as PostType } from "~/server/database/types";
+import { Page, Post as PostType } from "~/server/database/types";
 import { clerkClient } from "@clerk/nextjs/server";
 import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 import { db } from "~/server/database";
 import { profile } from "~/server/database/schema/user";
 import { eq } from "drizzle-orm";
 
-const PostInfo = async (props: PostType & { group: Group }) => {
+const PostInfo = async (props: PostType & { group: Page }) => {
    const [data] = await db
       .select({ clerkId: profile.clerkId })
       .from(profile)
@@ -54,7 +54,7 @@ const PostInfo = async (props: PostType & { group: Group }) => {
    );
 };
 
-export const Post = (props: PropsWithChildren<PostType & { group: Group }>) => {
+export const Post = (props: PropsWithChildren<PostType & { group: Page }>) => {
    return (
       <div className="isolate z-[400] flex rounded-md outline-[1px] outline-white/50 hover:outline">
          <VoteButtonGroup className="mt-2 hidden flex-col gap-2 md:flex" />

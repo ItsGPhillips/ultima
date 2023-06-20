@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 
 export type PageFeedProps = {
-   pageId: string;
+   handle: string;
 };
 
 export const PageFeed = (props: PageFeedProps) => {

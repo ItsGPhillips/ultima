@@ -4,7 +4,7 @@ import { CreatePostButton } from "./CreatePostButton";
 import { auth } from "~/server/lucia";
 import { cookies } from "next/headers";
 
-export const PageControls = async (props: { groupId: string }) => {
+export const PageControls = async (props: { handle: string }) => {
    const authRequest = auth.handleRequest({ cookies });
    const { user } = await authRequest.validateUser();
 
@@ -16,8 +16,8 @@ export const PageControls = async (props: { groupId: string }) => {
             "sticky top-[var(--header-height)] isolate z-[450] flex h-14 items-center bg-zinc-900 py-2"
          )}
       >
-         <CreatePostButton groupId={props.groupId} userId={user?.id} />
-         {!!user?.id && <SubscribeButton groupId={props.groupId} />}
+         <CreatePostButton groupId={props.handle} userId={user?.id} />
+         {!!user?.id && <SubscribeButton handle={props.handle} />}
       </div>
    );
 };

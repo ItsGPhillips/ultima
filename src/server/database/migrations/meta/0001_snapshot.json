@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "b7800834-b441-4221-8482-c26611b24287",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "0f3e5063-c3df-4dce-bddb-eac409a9ecf8",
+  "prevId": "b7800834-b441-4221-8482-c26611b24287",
   "tables": {
     "page": {
       "name": "page",
@@ -489,8 +489,8 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {}
@@ -536,8 +536,8 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {}

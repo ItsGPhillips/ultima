@@ -1,9 +1,9 @@
 import { cn } from "~/utils/cn";
-import { LayoutContext } from "./types";
 import { headers } from "next/headers";
 import { userAgent } from "next/server";
 import { PropsWithChildren } from "react";
 import { PageBanner } from "~/components/PageBanner";
+import { LayoutContext } from "./types";
 
 export const createLayout = async (ctx: LayoutContext) => {
    return (

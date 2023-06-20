@@ -1,29 +1,21 @@
 "use server";
 
 import { and, eq } from "drizzle-orm";
-import { Log } from "~/utils/log";
 import { db } from "./database";
-import { subscription } from "./database/schema/user";
-import { auth } from "./lucia";
-import { cookies } from "next/headers";
-
-const getCurrentUser = async () => {
-   const authRequest = auth.handleRequest({ cookies });
-   const { user } = await authRequest.validateUser();
-   return user;
-};
+import { withAuth } from "./actions/utils";
+import { subscription } from "./database/schema";
 
 export const getPageSubscription = async (
-   pageId: string,
-   profileHandle: string
+   handle: string,
+   profileId: string
 ) => {
    const data = await db.query.subscription.findFirst({
       columns: {
-         profileHandle: false,
+         handle: false,
       },
       where: and(
-         eq(subscription.groupId, pageId),
-         eq(subscription.profileHandle, profileHandle)
+         eq(subscription.handle, handle),
+         eq(subscription.profileId, profileId)
       ),
    });
    return {
@@ -31,37 +23,28 @@ export const getPageSubscription = async (
    };
 };
 
-export const getIsSubscribed = async (pageId: string): Promise<boolean> => {
-   const user = await getCurrentUser();
-   if (user === null) {
-      throw new Error("UNAUTHORISED");
+export const getIsSubscribed = withAuth(
+   async (user, handle: string): Promise<boolean> => {
+      const data = await getPageSubscription(handle, user.id);
+      return data.subscription !== null;
    }
-   const data = await getPageSubscription(pageId, user.handle);
-   return data.subscription !== null;
-};
+);
 
-export const toggleSubscription = async (pageId: string) => {
-   const user = await getCurrentUser();
-   if (user === null) {
-      throw new Error("UNAUTHORISED");
-   }
-
-   const s = await getPageSubscription(pageId, user.handle);
-
+export const toggleSubscription = withAuth(async (user, handle: string) => {
+   const s = await getPageSubscription(handle, user.id);
    if (s.subscription) {
       await db
          .delete(subscription)
          .where(
             and(
-               eq(subscription.groupId, pageId),
-               eq(subscription.profileHandle, user.handle)
+               eq(subscription.handle, handle),
+               eq(subscription.profileId, user.id)
             )
          );
       return;
    }
-
    await db.insert(subscription).values({
-      groupId: pageId,
-      profileHandle: user.handle,
+      handle,
+      profileId: user.id,
    });
-};
+});

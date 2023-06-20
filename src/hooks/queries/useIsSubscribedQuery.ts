@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { getIsSubscribed } from "~/server/actions";
+import { USER_SUBSCRIPTION } from "../queryKeys";
 
 export const useIsSubscribedQuery = (data: {
    initialData: boolean;
    pageId: string;
 }) =>
    useQuery({
-      queryKey: ["user", "subscription", { pageId: data.pageId }],
+      queryKey: [USER_SUBSCRIPTION, { pageId: data.pageId }],
       queryFn: async () => {
          return await getIsSubscribed(data.pageId);
       },

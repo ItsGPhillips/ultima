@@ -1,28 +1,94 @@
-# Create T3 App
+<style>
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+   section {
+      padding: 2rem;
+      margin-bottom: 1rem;
+      background-color: rgba(255, 255, 255, 0.02);
+      border-radius: 1rem;
+   }
+   section h2 {
+      color: white;
+      font-weight: bold;
+   }
+   .header {
+      margin-bottom: 2rem;
+   }
+   hr {
+      margin: 1rem 0px;
+   }
+   .nextjs-logo {
+      background-color: transparent;
+      filter: invert(0.85);
+      height: 3rem;
+   }
+   li {
+      list-style: none;
+      position: relative;
+      margin-left: 2rem;
+      border-bottom: solid 1px rgba(255, 255, 255, 0.1);
+      margin-bottom: 3rem;
+   }
+   li::before {
+      position: absolute;
+      right: 100%;
+      font-size: larger;
+      margin-right: 1rem;
+      white-space: nowrap;
+   }
+   li.hot-1::before {
+      content: "🔥";
+   }
+   li.hot-2::before {
+      content: "🔥🔥";
+   }
+   li.hot-3::before {
+      content: "🔥🔥🔥";
+   }
+   .block {
+      display: block;
+   }
+</style>
 
-## What's next? How do I make an app with this?
-
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
-
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
-
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
-
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+<body>
+   <h1>ULTIMA</h1>
+   <section>
+      <h2>Stack</h2>
+      <hr />
+      <ul>
+         <li class="hot-3">
+            <a class="header" href="https://nextjs.org/" title="NEXT JS">
+               <img 
+                  class="nextjs-logo"
+                  src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg" 
+               />
+            </a>
+            <span class="block">Server Side Rendering (SSR)</span>
+            <span class="block">React Server Components</span>
+            <span class="block">Full Stack Framwork</span>
+         </li>
+         <li class="hot-2">
+            <h3>Tailwind</h3>
+         </li>
+         <li class="hot-2">
+            <h3>React Query</h3>
+         </li>
+         <li class="hot-3">
+            <a class="header" href="https://orm.drizzle.team/" title="Drizzle ORM">
+               <img 
+                  class="nextjs-logo"
+                  src="./misc/drizzle-orm.svg" 
+               />
+               <h3 style="display: inline-block;">Drizzle Orm</h3>
+            </a>
+         </li>
+      </ul>
+   </section>
+   <section>
+      <h2>Database Schema</h2>
+      <hr />
+      <img src="./misc/database_schema.svg">
+   </section>
+</body>

@@ -8,26 +8,36 @@ import { cn } from "~/utils/cn";
 import { Seperator } from "~/components/shared/Seperator";
 import { Badge } from "~/components/Badge";
 import { db } from "~/server/database";
+import { notFound } from "next/navigation";
 
 const Page = async (ctx: any) => {
-   const group = await db.query.group.findFirst({
-      where: (group, { eq }) => eq(group.id, ctx.params.slug),
+   const page = await db.query.page.findFirst({
+      where: (page, { eq }) => eq(page.handle, ctx.params.slug),
       with: {
-         badges: true,
+         badges: {
+            columns: {
+               name: true,
+            },
+         },
+         moderators: {
+            columns: {
+               moderatorHandle: true,
+            },
+         },
       },
    });
 
-   if (!group) {
-      return <div>{ctx.params.slug} not found</div>;
+   if (!page) {
+      return null;
    }
 
-   const date = new Date(group.createdAt)
+   const date = new Date(page.createdAt)
       .toDateString()
       .split(" ")
       .slice(1)
       .join(" ");
 
-   return ( 
+   return (
       <div
          className={cn(
             "float-right h-[var(--available-area-height)] border-r-[1px] border-white/10 py-2 text-white",
@@ -36,14 +46,15 @@ const Page = async (ctx: any) => {
       >
          <div className="flex w-full basis-12 items-end pl-2">
             <h1 className="truncate whitespace-pre-line text-3xl font-bold">
-               {group.name}
+               {page.title}
             </h1>
          </div>
          <span className="text-link pl-2 text-sm font-light italic text-white/75">
-            @{group.id}
+            @{page.handle}
          </span>
          <div className="ml-2 mt-2 flex w-full flex-wrap gap-1">
-            {group.badges.map((badge) => {
+            {!!page.primaryProfileId && <Badge variant={"user"} ignoreLabel />}
+            {page.badges.map((badge) => {
                return (
                   <Badge
                      variant={badge.name}
@@ -66,37 +77,41 @@ const Page = async (ctx: any) => {
 
          <span className="mt-2 border-b-[1px] border-white/10" />
          <div className="ml-2 mt-2 pr-2">
-            <h3 className="mb-1 font-bold text-white/90">Description</h3>
-            <p className="text-sm text-white/75">{group.description}</p>
+            <h3 className="mb-1 font-bold text-white/90">Details</h3>
+            <p className="text-sm text-white/75">{page.details}</p>
          </div>
          <Seperator className="my-2" />
-         <div className="flex flex-1 grow flex-col">
-            <h3 className="mb-1 ml-2 font-bold text-white/90">Moderators</h3>
-            {Array(10)
-               .fill(null)
-               .map((_, idx) => {
-                  return (
-                     <React.Fragment key={idx}>
-                        <div
-                           className={cn(
-                              "relative flex items-center gap-2 overflow-hidden rounded-md p-1 hover:bg-white/10",
-                              "[&>span]:hover:text-green-400"
-                           )}
-                           suppressHydrationWarning
-                        >
-                           <UserAvatar
-                              name="Test Name"
-                              className="float-left block h-6 w-6 shrink-0 text-sm"
-                           />
-                           <span className="testthing text-link flex h-full max-w-[80%] items-center truncate text-xs text-green-400/70">
-                              u/random-username
-                           </span>
-                        </div>
-                     </React.Fragment>
-                  );
-               })}
-         </div>
-         <Seperator className="my-2" />
+         {page.moderators.length > 0 && (
+            <>
+               <div className="flex flex-1 grow flex-col">
+                  <h3 className="mb-1 ml-2 font-bold text-white/90">
+                     Moderators
+                  </h3>
+                  {page.moderators.map((moderator, idx) => {
+                     return (
+                        <React.Fragment key={idx}>
+                           <div
+                              className={cn(
+                                 "relative flex items-center gap-2 overflow-hidden rounded-md p-1 hover:bg-white/10",
+                                 "[&>span]:hover:text-green-400"
+                              )}
+                              suppressHydrationWarning
+                           >
+                              <UserAvatar
+                                 name="Test Name"
+                                 className="float-left block h-6 w-6 shrink-0 text-sm"
+                              />
+                              <span className="testthing text-link flex h-full max-w-[80%] items-center truncate text-xs text-green-400/70">
+                                 u/random-username
+                              </span>
+                           </div>
+                        </React.Fragment>
+                     );
+                  })}
+               </div>
+               <Seperator className="my-2" />
+            </>
+         )}
          <div className="ml-2 mt-auto flex items-center gap-2 pb-2 text-xs">
             <MdCopyright color="rgba(255,255,255,0.75)" className="h-4 w-4" />
             <span className="text-white/75">George Phillips 2023</span>

@@ -5,26 +5,41 @@ import { cn } from "~/utils/cn";
 import { getBaseUrl } from "~/utils/getBaseUrl";
 import { PROFILE_TABLE_SCHEMA } from "~/server/database/zod";
 import { SignInButton } from "./SignInButton";
+import { currentUser } from "~/server/actions/utils";
+import { db } from "~/server/database";
 
-const getCurrentUser = async () => {
-   const res = await fetch(`${getBaseUrl()}/api/user`, {
-      method: "GET",
-      headers: headers(),
-   });
-   const data = await res.json();
-   console.log(data)
-   return PROFILE_TABLE_SCHEMA.select.nullable().parse(data);
-};
+// const getCurrentUser = async () => {
+//    const res = await fetch(`${getBaseUrl()}/api/user`, {
+//       method: "GET",
+//       headers: headers(),
+//    });
+//    const data = await res.json();
+//    console.log(data);
+//    return PROFILE_TABLE_SCHEMA.select.nullable().parse(data);
+// };
 
 export const Header = async () => {
-   const user = await getCurrentUser();
+   const user = await currentUser();
 
    const ua = userAgent({ headers: headers() });
    const isTouchDevice = /mobile|tablet/.test(ua.device.type ?? "");
 
    let content;
    if (user) {
-      const name = `${user.firstName} ${user.lastName}`;
+      const profile = await db.query.profile.findFirst({
+         where: (profile, { eq }) => eq(profile.id, user.id),
+         with: {
+            page: {
+               columns: {
+                  handle: true,
+               },
+            },
+         },
+      });
+
+      if (!profile) throw new Error("INVALID_DATABASE_STATE");
+
+      const name = `${profile.firstName} ${profile.firstName}`;
       content = (
          <header className={cn("mx-4 h-full w-[inherit]")}>
             <div
@@ -32,8 +47,9 @@ export const Header = async () => {
                suppressHydrationWarning
             >
                {name}
-               <span className="mr-2 hidden sm:block">{user.handle}</span>
-               {/* <UserAvatar name={name} imageUrl={user.imageUrl} /> */}
+               <span className="mr-2 hidden sm:block">
+                  {profile.page.handle}
+               </span>
             </div>
          </header>
       );

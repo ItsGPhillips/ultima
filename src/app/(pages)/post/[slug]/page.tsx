@@ -1,21 +1,18 @@
 import { HeaderScrollHandle } from "~/components/Header/HideOnScroll";
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
-import { Post } from "~/components/Post";
-
 import { PageControls } from "~/components/PageControls";
 import { db } from "~/server/database";
-import { eq } from "drizzle-orm";
-import { post } from "~/server/database/schema/user";
 import { PageFeed } from "~/components/PageFeed";
 
 const Page = async (ctx: any) => {
-   const ua = userAgent({ headers: headers() });
 
+   const ua = userAgent({ headers: headers() });
+   
    const posts = await db.query.post.findMany({
-      where: () => eq(post.groupId, ctx.params.slug),
+      where: (post, { eq }) => eq(post.handle, ctx.params.slug),
       with: {
-         group: true,
+         page: true,
       },
    });
 
@@ -32,8 +29,8 @@ const Page = async (ctx: any) => {
    return (
       <>
          {ua.device.type === "mobile" && <HeaderScrollHandle />}
-         <PageControls groupId={ctx.params.slug} />
-         <PageFeed pageId={ctx.params.slug}/>
+         <PageControls handle={ctx.params.slug} />
+         <PageFeed handle={ctx.params.slug} />
       </>
    );
 };
