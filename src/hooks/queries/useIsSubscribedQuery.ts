@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getIsSubscribed } from "~/server/actions";
+import { getIsSubscribed } from "~/server/actions/subscription";
 import { USER_SUBSCRIPTION } from "../queryKeys";
 
 export const useIsSubscribedQuery = (data: {

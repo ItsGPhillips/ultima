@@ -94,7 +94,7 @@ export const pageRelations = relations(page, ({ one, many }) => ({
    }),
    badges: many(pageBadge),
    moderators: many(pageModerators, {
-      relationName: "page_moderator"
+      relationName: "page_moderator",
    }),
 }));
 
@@ -208,7 +208,7 @@ export const post = pgTable("post", {
          onUpdate: "cascade",
       }),
 
-   postedAt: timestamp("posted_at", { withTimezone: true })
+   postedAt: timestamp("posted_at", { withTimezone: true, mode: "string" })
       .notNull()
       .defaultNow(),
    title: text("title").notNull(),

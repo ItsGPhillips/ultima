@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toggleSubscription } from "~/server/actions";
+import { toggleSubscription } from "~/server/actions/subscription";
 import { USER_SUBSCRIPTION } from "../queryKeys";
 
 export const useToggleSubscriptionMutation = (pageId: string) => {

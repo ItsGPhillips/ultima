@@ -1,5 +1,5 @@
 import { Button } from "./button";
-import { getIsSubscribed } from "~/server/actions";
+import { getIsSubscribed } from "~/server/actions/subscription";
 
 export type SubscribeButtonProps = {
    handle: string;

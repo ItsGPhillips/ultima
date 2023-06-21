@@ -1,3 +1,5 @@
+"use client"
+
 import { PropsWithChildren } from "react";
 import { UserAvatar } from "../shared/UserAvatar";
 import { VoteButtonGroup } from "./VoteButtonGroup";
@@ -7,26 +9,10 @@ import { IoShareSocial } from "react-icons/io5";
 import { RxDotsHorizontal } from "react-icons/rx";
 import Link from "next/link";
 import { SeperatorDot } from "../shared/SeperatorDot";
-import { Page, Post as PostType } from "~/server/database/types";
-import { clerkClient } from "@clerk/nextjs/server";
+import {  Post as PostType } from "~/server/database/types";
 import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
-import { db } from "~/server/database";
-import { profile } from "~/server/database/schema/user";
-import { eq } from "drizzle-orm";
 
-const PostInfo = async (props: PostType & { group: Page }) => {
-   const [data] = await db
-      .select({ clerkId: profile.clerkId })
-      .from(profile)
-      .where(eq(profile.handle, props.profileHandle))
-      .limit(1);
-
-   if (!data) {
-      throw new Error("invailid profile handle");
-   }
-
-   const user = await clerkClient.users.getUser(data.clerkId);
-
+const PostInfo = (props: PostType) => {
    return (
       <div className="flex items-center gap-2">
          <Link href="#">
@@ -36,30 +22,32 @@ const PostInfo = async (props: PostType & { group: Page }) => {
             <div className="flex items-center gap-2">
                <Link href="#" className="text-link">
                   <span className="whitespace-nowrap text-sm">
-                     {props.group.name}
+                     {props.handle}
                   </span>
                </Link>
                <SeperatorDot />
                <Link href="#" className="text-link">
                   <span className="whitespace-nowrap text-sm">
-                     u/{user.username}
+                     {props.posterHandle}
                   </span>
                </Link>
             </div>
             <div className="text-xs text-white/50">
-               {formatDistanceToNowStrict(props.postedAt, { addSuffix: true })}
+               {formatDistanceToNowStrict(new Date(props.postedAt), {
+                  addSuffix: true,
+               })}
             </div>
          </div>
       </div>
    );
 };
 
-export const Post = (props: PropsWithChildren<PostType & { group: Page }>) => {
+export const Post = (props: PropsWithChildren<PostType>) => {
    return (
       <div className="isolate z-[400] flex rounded-md outline-[1px] outline-white/50 hover:outline">
          <VoteButtonGroup className="mt-2 hidden flex-col gap-2 md:flex" />
          <div className="flex h-fit flex-1 flex-col gap-2 rounded-md bg-zinc-800 p-3 pb-0">
-            <PostInfo {...props} profileHandle={props.profileHandle} />
+            <PostInfo {...props} />
             <h4 className="block text-xl">{props.title}</h4>
             <p className="max-w-[80ch] text-sm">{props.body}</p>
             <div className="flex w-full items-stretch gap-2 border-t-[1px] border-white/20 md:gap-4">

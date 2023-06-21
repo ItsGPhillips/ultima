@@ -16,16 +16,6 @@ const Page = async (ctx: any) => {
       },
    });
 
-   const comp = (a: (typeof posts)[number], b: (typeof posts)[number]) => {
-      if (a.postedAt < b.postedAt) {
-         return 1;
-      }
-      if (a.postedAt > b.postedAt) {
-         return -1;
-      }
-      return 0;
-   };
-
    return (
       <>
          {ua.device.type === "mobile" && <HeaderScrollHandle />}

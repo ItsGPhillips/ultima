@@ -1,9 +1,9 @@
 "use server";
 
 import { and, eq } from "drizzle-orm";
-import { db } from "./database";
-import { withAuth } from "./actions/utils";
-import { subscription } from "./database/schema";
+import { db } from "../database";
+import { withAuth } from "./utils";
+import { subscription } from "../database/schema";
 
 export const getPageSubscription = async (
    handle: string,

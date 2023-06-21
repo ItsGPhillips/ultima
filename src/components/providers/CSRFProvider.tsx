@@ -22,11 +22,8 @@ export const CSRFProvider = (props: CSRFProviderProps) => {
    const isClient = useIsClient();
    if (!isClient) {
       // we are on the server.
-      console.log("CSRFProvider - SERVER");
       return <>{props.children}</>;
    }
-
-   console.log("CSRFProvider - CLIENT");
 
    if (window.$ultima_csrf_fetch_brand === undefined) {
       window.$ultima_csrf_fetch_brand = fetchSymbol;

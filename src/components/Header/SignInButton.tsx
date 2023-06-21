@@ -26,6 +26,7 @@ export const SignInButton = (props: SignInButtonProps) => {
                }
             );
             if (!response.ok) {
+               console.log(await response.json());
                // TODO handle error.
             }
             router.refresh();

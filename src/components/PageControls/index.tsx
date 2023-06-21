@@ -12,11 +12,11 @@ export const PageControls = async (props: { handle: string }) => {
       <div
          id="feed-controls"
          className={cn(
-            "pl-2 pr-2 md:pl-14",
+            "pl-2 pr-2 md:pl-10",
             "sticky top-[var(--header-height)] isolate z-[450] flex h-14 items-center bg-zinc-900 py-2"
          )}
       >
-         <CreatePostButton groupId={props.handle} userId={user?.id} />
+         <CreatePostButton handle={props.handle} />
          {!!user?.id && <SubscribeButton handle={props.handle} />}
       </div>
    );

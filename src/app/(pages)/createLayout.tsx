@@ -43,7 +43,7 @@ const FeedContainer = (props: PropsWithChildren) => {
          className={cn("", {
             "basis-full": ua.device.type === "mobile",
             [tabletClasses]: ua.device.type === "tablet",
-            "max-w-2xl shrink basis-full md:basis-1/2":
+            "max-w-2xl shrink basis-full md:basis-1/2 mr-1":
                ua.device.type === undefined,
          })}
       >
