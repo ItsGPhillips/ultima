@@ -15,6 +15,20 @@
       "when": 1687217098908,
       "tag": "0001_cooing_menace",
       "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1687552512380,
+      "tag": "0002_confused_miracleman",
+      "breakpoints": false
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1687648068287,
+      "tag": "0003_mean_slipstream",
+      "breakpoints": false
     }
   ]
 }

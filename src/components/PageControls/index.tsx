@@ -3,10 +3,18 @@ import { SubscribeButton } from "./SubscribeButton";
 import { CreatePostButton } from "./CreatePostButton";
 import { auth } from "~/server/lucia";
 import { cookies } from "next/headers";
+import { FocusScope } from "../shared/Focus";
+import { getIsSubscribed } from "~/server/actions/subscription";
+import { CreatePostDialog } from "../ui/CreatePostDialog";
 
 export const PageControls = async (props: { handle: string }) => {
    const authRequest = auth.handleRequest({ cookies });
    const { user } = await authRequest.validateUser();
+
+   let isSubscribed = false;
+   if (user) {
+      isSubscribed = await getIsSubscribed(props.handle);
+   }
 
    return (
       <div
@@ -16,8 +24,18 @@ export const PageControls = async (props: { handle: string }) => {
             "sticky top-[var(--header-height)] isolate z-[450] flex h-14 items-center bg-zinc-900 py-2"
          )}
       >
-         <CreatePostButton handle={props.handle} />
-         {!!user?.id && <SubscribeButton handle={props.handle} />}
+         <FocusScope autoFocus>
+            <CreatePostButton handle={props.handle}>
+               <CreatePostDialog handle={props.handle} />
+            </CreatePostButton>
+
+            {!!user?.id && (
+               <SubscribeButton
+                  handle={props.handle}
+                  initialData={isSubscribed}
+               />
+            )}
+         </FocusScope>
       </div>
    );
 };

@@ -1,16 +1,49 @@
-import { Button } from "./button";
-import { getIsSubscribed } from "~/server/actions/subscription";
+"use client";
+
+import { AriaButton } from "~/components/shared/Button";
+import { useToggleSubscriptionMutation } from "~/hooks/mutations/useToggleSubscriptionMutation";
+import { useIsSubscribedQuery } from "~/hooks/queries/useIsSubscribedQuery";
+import { cn } from "~/utils/cn";
 
 export type SubscribeButtonProps = {
    handle: string;
+   initialData: boolean;
 };
 
-export const SubscribeButton = async (props: SubscribeButtonProps) => {
-   const isSubscribed = await getIsSubscribed(props.handle);
+/**
+ * hook that wraps an optimistaically updated
+ * trpc query.
+ */
+const useSubscribeButtonQuery = (data: SubscribeButtonProps) => {
+   const { data: isSubscribed, isFetching } = useIsSubscribedQuery(data);
+   const { mutate: toggleSubscription } = useToggleSubscriptionMutation(
+      data.handle
+   );
+   return { isSubscribed, isFetching, toggleSubscription };
+};
+
+export const SubscribeButton = (props: SubscribeButtonProps) => {
+   const { isSubscribed, toggleSubscription } = useSubscribeButtonQuery(props);
+
+   const className = isSubscribed
+      ? cn(
+           "ml-auto border-2 px-4 py-1 font-bold text-white antialiased rounded-full",
+           "border-green-500 bg-green-500/40 transistion-all"
+        )
+      : cn(
+           "ml-auto border-2 px-4 py-1 font-bold text-white antialiased rounded-full",
+           "border-blue-500 bg-blue-500/40 transistion-all"
+        );
+
    return (
-      <Button
-         groupId={props.handle}
-         isSubscribed={isSubscribed}
-      />
+      <AriaButton
+         onPress={() => {
+            console.log("clicked");
+            toggleSubscription();
+         }}
+         className={cn("flex w-32 items-center justify-center", className)}
+      >
+         {isSubscribed ? "Subscribed" : "Subscribe"}
+      </AriaButton>
    );
 };

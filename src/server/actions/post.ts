@@ -8,6 +8,8 @@ import { withAuth } from "./utils";
 import { cuid } from "~/utils/cuid";
 import { Log } from "~/utils/log";
 import { subDays } from "date-fns";
+import superjson from "superjson";
+import { JSONContent } from "@tiptap/react";
 
 const POSTS_PER_REQUEST_LIMIT = 5;
 
@@ -36,7 +38,7 @@ const POSTS_PER_REQUEST_LIMIT = 5;
 //       .select({ id: post.id })
 //       .from(post)
 //       .where(
-//          sql`${post.handle} = ${options.handle} AND 
+//          sql`${post.handle} = ${options.handle} AND
 //          ${post.postedAt} < ${options.lastPost.postedAt}::TIMESTAMP`
 //       )
 //       .orderBy(desc(post.postedAt))
@@ -76,10 +78,11 @@ export const getPostsAction = async (options: {
       .limit(POSTS_PER_REQUEST_LIMIT);
 };
 
-let iter = 0;
-
-export const createPost = withAuth(
-   async (user, data: Omit<Post<"insert">, "id" | "posterHandle">) => {
+export const createPostAction = withAuth(
+   async (
+      user,
+      data: Omit<Post<"insert">, "id" | "posterHandle" | "body"> & { body: any }
+   ) => {
       const [currentUser] = await db
          .select({
             handle: page.handle,
@@ -90,19 +93,18 @@ export const createPost = withAuth(
 
       if (!currentUser) throw new Error("INVALID_DATABASE_STATE");
 
-      currentUser.handle;
+      const payload = {
+         id: cuid(),
+         handle: data.handle,
+         posterHandle: currentUser.handle,
+         title: data.title,
+         body: superjson.deserialize<JSONContent>(data.body),
+      };
 
-      const createdPost = await db
-         .insert(post)
-         .values({
-            id: cuid(),
-            posterHandle: currentUser.handle,
-            ...data,
-            title: String(iter++),
-            postedAt: subDays(new Date(), iter).toISOString(),
-         })
-         .returning();
-
-      Log.debug(createdPost, "CREATED POST");
+      try {
+         await db.insert(post).values(payload).returning();
+      } catch (e) {
+         Log.error(e, "createPostAction");
+      }
    }
 );

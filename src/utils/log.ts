@@ -3,6 +3,8 @@ import pino, { LoggerOptions } from "pino";
 import { serialize } from "superjson";
 import {} from "json-colorizer";
 
+const IS_BROWSER = typeof window !== undefined;
+
 export namespace Log {
    const options: LoggerOptions = {
       serializers: {
@@ -10,6 +12,7 @@ export namespace Log {
       },
       redact: ["key.hashed_password", "hashedPassword"],
       level: env.NODE_ENV === "production" ? "warn" : "debug",
+      browser: {}
    };
    const instance =
       env.NODE_ENV === "production"

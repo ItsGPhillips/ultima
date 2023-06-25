@@ -18,9 +18,7 @@ export const createLayout = async (ctx: LayoutContext) => {
             >
                {ctx.pageinfo}
             </div>
-            <FeedContainer>
-               {ctx.children}
-            </FeedContainer>
+            <FeedContainer>{ctx.children}</FeedContainer>
             <div
                className={cn(
                   "sticky hidden txl:block",
@@ -41,9 +39,9 @@ const FeedContainer = (props: PropsWithChildren) => {
    return (
       <div
          className={cn("", {
-            "basis-full": ua.device.type === "mobile",
+            "basis-full mx-1": ua.device.type === "mobile",
             [tabletClasses]: ua.device.type === "tablet",
-            "max-w-2xl shrink basis-full md:basis-1/2 mr-1":
+            "mx-1 max-w-2xl shrink basis-full md:ml-0 md:basis-1/2":
                ua.device.type === undefined,
          })}
       >

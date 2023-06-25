@@ -4,12 +4,12 @@ import { USER_SUBSCRIPTION } from "../queryKeys";
 
 export const useIsSubscribedQuery = (data: {
    initialData: boolean;
-   pageId: string;
+   handle: string;
 }) =>
    useQuery({
-      queryKey: [USER_SUBSCRIPTION, { pageId: data.pageId }],
+      queryKey: [USER_SUBSCRIPTION, { handle: data.handle }],
       queryFn: async () => {
-         return await getIsSubscribed(data.pageId);
+         return await getIsSubscribed(data.handle);
       },
       initialData: data.initialData,
       refetchOnMount: false,

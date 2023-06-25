@@ -10,7 +10,9 @@ export type UserAvatarProps = {
 };
 
 export const UserAvatar: React.FC<UserAvatarProps> = (props) => {
-   const [c0, c1, c2] = props.name.split(" ").map((name) => name[0]);
+   const [c0, c1, c2] = props.name
+      .split(" ")
+      .map((name) => name[0]?.toLocaleUpperCase());
    return (
       <RadixAvatar.Root
          className={cn(

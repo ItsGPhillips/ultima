@@ -6,10 +6,12 @@ import {
    boolean,
    primaryKey,
    varchar,
+   jsonb,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { Many, relations } from "drizzle-orm";
 import { CUID_LENGTH } from "~/utils/cuid";
+import { JSONContent } from "@tiptap/react";
 
 //==================================================================
 // Auth schema defined buy lucia-auth
@@ -212,7 +214,7 @@ export const post = pgTable("post", {
       .notNull()
       .defaultNow(),
    title: text("title").notNull(),
-   body: text("body"),
+   body: jsonb("body").notNull().$type<JSONContent>(),
 });
 
 export const postRel = relations(post, ({ one, many }) => ({

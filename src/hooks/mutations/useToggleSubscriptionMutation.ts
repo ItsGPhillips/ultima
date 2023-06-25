@@ -2,12 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toggleSubscription } from "~/server/actions/subscription";
 import { USER_SUBSCRIPTION } from "../queryKeys";
 
-export const useToggleSubscriptionMutation = (pageId: string) => {
-   const queryKey = [USER_SUBSCRIPTION, { pageId }];
+export const useToggleSubscriptionMutation = (handle: string) => {
+   const queryKey = [USER_SUBSCRIPTION, { handle }];
    const client = useQueryClient();
    return useMutation(
       async () => {
-         await toggleSubscription(pageId);
+         await toggleSubscription(handle);
       },
       {
          onMutate: async () => {
