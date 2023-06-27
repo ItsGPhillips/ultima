@@ -1,50 +1,115 @@
-"use client"
+"use client";
 
-import * as Toolbar from "~/components/shared/Toolbar";
-import { LuBold, LuItalic, LuStrikethrough } from "react-icons/lu";
+import {
+   LuAlignCenter,
+   LuAlignJustify,
+   LuAlignLeft,
+   LuAlignRight,
+   LuBold,
+   LuCode2,
+   LuItalic,
+   LuStrikethrough,
+} from "react-icons/lu";
 import { Editor } from "@tiptap/react";
-import { Button } from "~/components/shared/Button";
+import { AriaButton } from "~/components/shared/Button";
+import { cn } from "~/utils/cn";
+import { cloneElement } from "react";
+
+const ControlButton = (props: {
+   isActive: boolean;
+   onPress: () => void;
+   children: JSX.Element;
+}) => {
+   return (
+      <AriaButton
+         className={cn(
+            "relative h-8 w-8 cursor-pointer rounded-md",
+            props.isActive
+               ? "border-2 border-blue-400 bg-blue-400/30"
+               : "hover:bg-white/20"
+         )}
+         onPress={props.onPress}
+      >
+         {cloneElement(props.children, {
+            className: cn(
+               props.children.props.className,
+               "absolute aspect-square inset-0 m-auto flex items-center justify-center"
+            ),
+         })}
+      </AriaButton>
+   );
+};
 
 export const Controls = (props: { editor: Editor }) => {
    return (
-      <Toolbar.Root dir="ltr" className="flex h-fit items-stretch gap-2 bg-black/60">
-         <Toolbar.ToggleGroup
-            className="flex items-stretch p-1"
-            type="multiple"
-            value={[""]}
-            onValueChange={() => {}}
+      <div className="flex items-stretch rounded-xl bg-black/50 p-1 ">
+         <ControlButton
+            isActive={props.editor.isActive("bold")}
+            onPress={() => {
+               props.editor
+               props.editor.chain().focus().toggleBold().run();
+            }}
          >
-            <Toolbar.ToggleItem value="bold" asChild>
-               <Button
-                  className="rounded-none"
-                  onClick={() => {
-                     props.editor.chain().focus().toggleBold().run();
-                  }}
-               >
-                  <LuBold className="h-full w-full" />
-               </Button>
-            </Toolbar.ToggleItem>
-            <Toolbar.ToggleItem value="italic" asChild>
-               <Button
-                  className="rounded-none"
-                  onClick={() => {
-                     props.editor.chain().focus().toggleItalic().run();
-                  }}
-               >
-                  <LuItalic className="h-full w-full" />
-               </Button>
-            </Toolbar.ToggleItem>
-            <Toolbar.ToggleItem value="srike-through" asChild>
-               <Button
-                  className="rounded-none"
-                  onClick={() => {
-                     props.editor.chain().focus().setStrike();
-                  }}
-               >
-                  <LuStrikethrough className="h-full w-full" />
-               </Button>
-            </Toolbar.ToggleItem>
-         </Toolbar.ToggleGroup>
-      </Toolbar.Root>
+            <LuBold />
+         </ControlButton>
+         <ControlButton
+            isActive={props.editor.isActive("italic")}
+            onPress={() => {
+               props.editor.chain().focus().toggleItalic().run();
+            }}
+         >
+            <LuItalic />
+         </ControlButton>
+         <ControlButton
+            isActive={props.editor.isActive("strike")}
+            onPress={() => {
+               props.editor.chain().focus().toggleStrike().run();
+            }}
+         >
+            <LuStrikethrough />
+         </ControlButton>
+         <span className="mx-1 h-6 w-[1px] place-self-center bg-white/20" />
+         <ControlButton
+            isActive={props.editor.isActive({ textAlign: "start" })}
+            onPress={() => {
+               props.editor.chain().focus().setTextAlign("start").run();
+            }}
+         >
+            <LuAlignLeft />
+         </ControlButton>
+         <ControlButton
+            isActive={props.editor.isActive({ textAlign: "center" })}
+            onPress={() => {
+               props.editor.chain().focus().setTextAlign("center").run();
+            }}
+         >
+            <LuAlignCenter />
+         </ControlButton>
+         <ControlButton
+            isActive={props.editor.isActive({ textAlign: "right" })}
+            onPress={() => {
+               props.editor.chain().focus().setTextAlign("right").run();
+            }}
+         >
+            <LuAlignRight />
+         </ControlButton>
+         <ControlButton
+            isActive={props.editor.isActive({ textAlign: "justify" })}
+            onPress={() => {
+               props.editor.chain().focus().setTextAlign("justify").run();
+            }}
+         >
+            <LuAlignJustify />
+         </ControlButton>
+         <span className="mx-1 h-6 w-[1px] place-self-center bg-white/20" />
+         <ControlButton
+            isActive={props.editor.isActive("codeBlock")}
+            onPress={() => {
+               props.editor.chain().focus().toggleCodeBlock().run();
+            }}
+         >
+            <LuCode2 />
+         </ControlButton>
+      </div>
    );
 };

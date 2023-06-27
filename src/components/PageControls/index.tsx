@@ -1,11 +1,11 @@
 import { cn } from "~/utils/cn";
 import { SubscribeButton } from "./SubscribeButton";
-import { CreatePostButton } from "./CreatePostButton";
+import { CreatePostButton } from "~/components/ui/CreatePostButton";
 import { auth } from "~/server/lucia";
 import { cookies } from "next/headers";
 import { FocusScope } from "../shared/Focus";
 import { getIsSubscribed } from "~/server/actions/subscription";
-import { CreatePostDialog } from "../ui/CreatePostDialog";
+import { CreatePostDialog } from "~/components/ui/CreatePostDialog";
 
 export const PageControls = async (props: { handle: string }) => {
    const authRequest = auth.handleRequest({ cookies });

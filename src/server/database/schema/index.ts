@@ -7,6 +7,7 @@ import {
    primaryKey,
    varchar,
    jsonb,
+   serial,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { Many, relations } from "drizzle-orm";
@@ -261,5 +262,36 @@ export const postVotesRel = relations(postVotes, ({ one }) => ({
    page: one(page, {
       fields: [postVotes.handle],
       references: [page.handle],
+   }),
+}));
+
+//==================================================================
+
+export const userUploadedMedia = pgTable("user_uploaded_media", {
+   id: serial("id").notNull().primaryKey(),
+   profileId: text("profile_id")
+      .notNull()
+      .references(() => profile.id, {
+         onDelete: "cascade",
+         onUpdate: "cascade",
+      }),
+   handle: text("handle")
+      .notNull()
+      .references(() => page.handle, {
+         onDelete: "cascade",
+         onUpdate: "cascade",
+      }),
+   url: text("url").notNull(),
+   type: text("type", { enum: ["image", "video"] }).notNull(),
+});
+
+export const userUploadedMediaRel = relations(userUploadedMedia, ({ one }) => ({
+   page: one(page, {
+      fields: [userUploadedMedia.handle],
+      references: [page.handle],
+   }),
+   profile: one(profile, {
+      fields: [userUploadedMedia.profileId],
+      references: [profile.id],
    }),
 }));

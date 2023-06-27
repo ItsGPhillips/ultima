@@ -13,11 +13,22 @@ export const SignInButton = (props: SignInButtonProps) => {
    const { buttonProps } = useButton(
       {
          onPress: async () => {
+
+            const payload = {
+               "id": "email",
+               "password": "12345",
+               "email": "jood@mail.com",
+               "firstName": "Jade",
+               "lastName": "Broadhurst",
+               "handle": "jadster"
+             };
+
             const body = JSON.stringify({
                id: "email",
                password: "12345",
-               email: "test@abc.com",
+               email: "jood@mail.com",
             });
+            
             const response = await fetch(
                `${getBaseUrl()}/api/auth/user.signin`,
                {

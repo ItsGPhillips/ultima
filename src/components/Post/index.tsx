@@ -48,7 +48,6 @@ const PostInfo = (props: PostType) => {
 };
 
 export const Post = (props: PropsWithChildren<PostType>) => {
-   console.log(props.body);
    const editor = useRichTextEditor({ editable: false, content: props.body });
 
    return (

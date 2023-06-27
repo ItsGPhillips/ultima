@@ -1,11 +1,18 @@
 "use client";
 
-import { AnimatePresence, motion, useInView } from "framer-motion";
+import {
+   AnimatePresence,
+   motion,
+   useInView,
+   useIsomorphicLayoutEffect,
+} from "framer-motion";
 import { useEffect, useRef } from "react";
 import { usePostsInfinateQuery } from "~/hooks/queries/posts";
 import { Post } from "../Post";
 import { Spinner } from "../shared/Spinner";
 import { Player } from "@lottiefiles/react-lottie-player";
+import useMeasure from "react-use-measure";
+import { useUser } from "@clerk/nextjs";
 
 export type PageFeedProps = {
    handle: string;
@@ -69,24 +76,13 @@ export const PageFeed = (props: PageFeedProps) => {
 
    const posts = data?.pages.flat();
 
-   const what = (
-      <>
-         {posts?.map((post) => {
-            return <Post key={post.id} {...post} />;
-         })}
-         <PostLoader
-            hasNextPage={Boolean(hasNextPage)}
-            onInView={() => {
-               if (hasNextPage) {
-                  fetchNextPage();
-               }
-            }}
-         />
-      </>
-   );
+   const [mref, bounds] = useMeasure();
+   useIsomorphicLayoutEffect(() => {
+      document.body.style.setProperty("--feed-width", `${bounds.width}px`);
+   }, [bounds.width]);
 
    return (
-      <motion.div className="mt-1 flex flex-col items-stretch gap-2">
+      <motion.div ref={mref} className="mt-1 flex flex-col items-stretch gap-2">
          {posts && posts.length >= 1 ? (
             <>
                {posts?.map((post) => {

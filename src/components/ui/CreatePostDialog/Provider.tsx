@@ -7,11 +7,9 @@ import {
    useCallback,
    useContext,
    useState,
-   useTransition,
 } from "react";
 import { z } from "zod";
-
-import { createEditor } from "~/hooks/useRichTextEditor";
+import { useRichTextEditor } from "~/hooks/useRichTextEditor";
 
 export type CreatePostState = {
    title: string;
@@ -54,15 +52,11 @@ export type CreatePostDialogStateProviderProps = PropsWithChildren<{
    handle: string;
 }>;
 
-export const CreatePostDialogStateProvider = (
+export const CreatePostStateProvider = (
    props: CreatePostDialogStateProviderProps
 ) => {
    const [title, setTitle] = useState<CreatePostState["title"]>("");
-
-   const [_pending, transition] = useTransition();
-   const [body] = useState<CreatePostState["body"]>(() =>
-      createEditor({ transition })
-   );
+   const body = useRichTextEditor({ editable: true });
    const [isValid, setIsValid] = useState<CreatePostState["isValid"]>(null);
    const [errors, setErrors] = useState<string[]>([]);
 

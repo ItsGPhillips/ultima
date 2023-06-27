@@ -18,9 +18,9 @@ export default async (request: NextRequest) => {
    const response = NextResponse.next();
 
    // CSRF protection excluded on these domains
-   // if(CSRF_EXCLUDE_DOMAINS.includes(request.nextUrl.host)) {
-   //    return response;
-   // }
+   if(CSRF_EXCLUDE_DOMAINS.includes(request.nextUrl.host)) {
+      return response;
+   }
 
    // csrf protection
    const csrfError = await csrfProtect(request, response);

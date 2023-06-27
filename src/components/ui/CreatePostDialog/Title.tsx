@@ -12,6 +12,8 @@ export const TitleInput = () => {
          {
             "aria-label": "post title",
             placeholder: "Post Title...",
+            autoComplete: "off",
+            autoFocus: true,
             onChange: (value) => {
                state.title = value;
             },
@@ -26,7 +28,7 @@ export const TitleInput = () => {
          </VisuallyHidden>
          <input
             {...inputProps}
-            className="w-full bg-transparent p-4 text-3xl text-white outline-none"
+            className="w-full bg-transparent py-4 pl-3 text-3xl text-white outline-none"
          />
       </>
    );
