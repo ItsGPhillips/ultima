@@ -24,7 +24,7 @@ export const PageControls = async (props: { handle: string }) => {
             "sticky top-[var(--header-height)] isolate z-[450] flex h-14 items-center bg-zinc-900 py-2"
          )}
       >
-         <FocusScope autoFocus>
+         <FocusScope>
             <CreatePostButton handle={props.handle}>
                <CreatePostDialog handle={props.handle} />
             </CreatePostButton>

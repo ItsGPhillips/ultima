@@ -11,7 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { Many, relations } from "drizzle-orm";
-import { CUID_LENGTH } from "~/utils/cuid";
+import { DATABASE_CUID_LENGTH } from "~/utils/cuid";
 import { JSONContent } from "@tiptap/react";
 
 //==================================================================
@@ -196,7 +196,7 @@ export const subscriptionRel = relations(subscription, ({ one }) => ({
 //==================================================================
 
 export const post = pgTable("post", {
-   id: varchar("id", { length: CUID_LENGTH }).primaryKey(),
+   id: varchar("id", { length: DATABASE_CUID_LENGTH }).primaryKey(),
    handle: text("handle")
       .notNull()
       .references(() => page.handle, {
@@ -214,8 +214,8 @@ export const post = pgTable("post", {
    postedAt: timestamp("posted_at", { withTimezone: true, mode: "string" })
       .notNull()
       .defaultNow(),
-   title: text("title").notNull(),
    body: jsonb("body").notNull().$type<JSONContent>(),
+   images: text("image_urls").array(),
 });
 
 export const postRel = relations(post, ({ one, many }) => ({
@@ -235,7 +235,7 @@ export const postRel = relations(post, ({ one, many }) => ({
 export const postVotes = pgTable(
    "post_votes",
    {
-      postId: varchar("post_id", { length: CUID_LENGTH })
+      postId: varchar("post_id", { length: DATABASE_CUID_LENGTH })
          .notNull()
          .references(() => post.id, {
             onDelete: "cascade",

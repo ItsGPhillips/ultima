@@ -11,6 +11,7 @@
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",

@@ -1,6 +1,6 @@
 "use client";
 
-import { AriaButton } from "~/components/shared/Button";
+import { AriaButton } from "~/components/ui/shared/Button/aria";
 import { useToggleSubscriptionMutation } from "~/hooks/mutations/useToggleSubscriptionMutation";
 import { useIsSubscribedQuery } from "~/hooks/queries/useIsSubscribedQuery";
 import { cn } from "~/utils/cn";

@@ -1,7 +1,8 @@
 "use client";
 
 import { PropsWithChildren } from "react";
-import { AriaButton, Button } from "~/components/shared/Button";
+import { Button } from "~/components/ui/shared/Button";
+import { AriaButton } from "~/components/ui/shared/Button/aria";
 import { cn } from "~/utils/cn";
 import { Dialog } from "~/components/shared/Dialog";
 

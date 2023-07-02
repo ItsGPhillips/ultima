@@ -3,7 +3,7 @@ import { Roboto } from "next/font/google";
 import { cn } from "~/utils/cn";
 import { SSRProvider } from "~/components/providers/SSRProvider";
 import { TRPCClientProvider } from "~/components/providers/TRPCProvider";
-
+import { Provider as TooltipProvider } from "~/components/ui/shared/Tooltip";
 import { Header } from "~/components/Header";
 import { CSRFProvider } from "../components/providers/CSRFProvider";
 import { headers } from "next/headers";
@@ -25,14 +25,19 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
                      "bg-zinc-900 text-white antialiased",
                      font.className
                   )}
+                  style={{
+                     overflowAnchor: "none",
+                  }}
                   suppressHydrationWarning
                >
-                  <TRPCClientProvider>
-                     <Header />
-                     <div className="z-[500] mt-[var(--header-height)] w-full">
-                        {children}
-                     </div>
-                  </TRPCClientProvider>
+                  <TooltipProvider delayDuration={80}>
+                     <TRPCClientProvider>
+                        <Header />
+                        <div className="z-[500] mt-[var(--header-height)] w-full">
+                           {children}
+                        </div>
+                     </TRPCClientProvider>
+                  </TooltipProvider>
                </body>
             </html>
          </CSRFProvider>

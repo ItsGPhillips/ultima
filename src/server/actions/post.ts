@@ -93,13 +93,15 @@ export const createPostAction = withAuth(
 
       if (!currentUser) throw new Error("INVALID_DATABASE_STATE");
 
+      console.log("create post action", data?.images);
+
       const payload = {
          id: cuid(),
          handle: data.handle,
+         images: data.images,
          posterHandle: currentUser.handle,
-         title: data.title,
          body: superjson.deserialize<JSONContent>(data.body),
-      };
+      } satisfies Post<"insert">;
 
       try {
          await db.insert(post).values(payload).returning();

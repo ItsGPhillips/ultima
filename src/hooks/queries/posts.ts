@@ -1,5 +1,4 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getPostsAction } from "~/server/actions/post";
 
 export const usePostsInfinateQuery = (options: {
@@ -12,7 +11,6 @@ export const usePostsInfinateQuery = (options: {
          /* { id: string, postedAt: string } */
          pageParam,
       }) => {
-         console.log("here");
          return getPostsAction({
             ...options,
             lastPost: pageParam ?? null,

@@ -1,42 +1,31 @@
 "use client";
 
 import { Editor } from "@tiptap/react";
-import {
-   PropsWithChildren,
-   createContext,
-   useCallback,
-   useContext,
-   useState,
-} from "react";
-import { z } from "zod";
+import { PropsWithChildren, createContext, useContext } from "react";
+import { FileWithPath } from "react-dropzone";
 import { useRichTextEditor } from "~/hooks/useRichTextEditor";
 
+import {
+   IObservableArray,
+   IObservableValue,
+   ObservableSet,
+   action,
+   observable,
+} from "mobx";
+
 export type CreatePostState = {
-   title: string;
-   body: Editor | null;
+   editor: Editor;
    validate: () => boolean;
    handle: string;
-   isValid: boolean | null;
-   errors: string[];
+   isValid: IObservableValue<boolean | null>;
+   errors: ObservableSet<Errors>;
+   files: IObservableArray<{
+      id: string;
+      file: FileWithPath;
+      uploadProgress: number | null;
+   }>;
+   statusText: IObservableValue<string>;
 };
-
-const POST_INPUT_VALIDATOR = z.object({
-   title: z
-      .string({ required_error: "Posts must have a title" })
-      .min(1, { message: "Title is required " })
-      .max(100, { message: "Title is too long" }),
-   body: z.custom<Editor | null>().refine(
-      (editor) => {
-         if (editor === null) {
-            return false;
-         }
-         return editor.getText().trim().length > 0;
-      },
-      {
-         message: "Invalid post body",
-      }
-   ),
-});
 
 const CREATE_POST_STATE_CONTEXT = createContext<CreatePostState | null>(null);
 
@@ -48,55 +37,62 @@ export const useCreatePostState = (): CreatePostState => {
    return ctx;
 };
 
-export type CreatePostDialogStateProviderProps = PropsWithChildren<{
-   handle: string;
-}>;
+export enum Errors {
+   TooManyFiles,
+   BodyRequired,
+}
 
 export const CreatePostStateProvider = (
-   props: CreatePostDialogStateProviderProps
+   props: PropsWithChildren<{ handle: string }>
 ) => {
-   const [title, setTitle] = useState<CreatePostState["title"]>("");
-   const body = useRichTextEditor({ editable: true });
-   const [isValid, setIsValid] = useState<CreatePostState["isValid"]>(null);
-   const [errors, setErrors] = useState<string[]>([]);
+   let files = observable.array<CreatePostState["files"][number]>([], {
+      deep: true,
+      autoBind: true,
+   });
+   let isValid = observable.box<boolean | null>(null);
+   let errors = observable.set<Errors>();
+   let statusText = observable.box("");
+   const editor = useRichTextEditor({ editable: true });
 
-   const validate = useCallback((): boolean => {
-      const result = POST_INPUT_VALIDATOR.safeParse({
-         title,
-         body,
-      });
-      if (!result.success) {
-         setErrors(result.error.errors.map((error) => error.message));
-      } else {
-         setErrors([]);
-      }
-      setIsValid(result.success);
-      return result.success;
-   }, [title, body?.getText() ?? ""]);
+   const validate = action(() => {
+      // reset
+      isValid.set(null);
+      errors.replace([]);
 
-   const state = new Proxy(
-      {
-         title,
-         body,
-         isValid,
-         validate,
-         errors,
-         handle: props.handle,
-      },
-      {
-         set: (_target, property: keyof CreatePostState, value) => {
-            if (property === "title") {
-               setTitle(value);
-               return true;
-            }
-            console.error(`Do not set ${property}`);
-            return false;
-         },
+      // TODO: what should be the max number of files
+      if (files.length > 5) {
+         isValid.set(false);
+         errors.add(Errors.TooManyFiles);
+         return false;
       }
-   );
+
+      if (files.length > 0) {
+         isValid.set(true);
+         return true;
+      }
+
+      if (editor.getText().trim().length === 0) {
+         isValid.set(false);
+         errors.add(Errors.BodyRequired);
+         return false;
+      }
+
+      isValid.set(true);
+      return true;
+   });
 
    return (
-      <CREATE_POST_STATE_CONTEXT.Provider value={state}>
+      <CREATE_POST_STATE_CONTEXT.Provider
+         value={{
+            editor,
+            errors,
+            files,
+            handle: props.handle,
+            isValid,
+            statusText,
+            validate,
+         }}
+      >
          {props.children}
       </CREATE_POST_STATE_CONTEXT.Provider>
    );

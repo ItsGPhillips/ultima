@@ -1,10 +1,8 @@
-import { withTwin } from "./tools/withTwin.mjs";
-
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.
  */
-await import("./src/env.mjs");
+const { env } = await import("./src/env.mjs");
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -12,7 +10,12 @@ const config = {
    experimental: {
       serverActions: true,
    },
-
+   images: {
+      domains: [
+         "uploadthing.com",
+         env.NEXT_PUBLIC_CLOUDFLARE_STORAGE_DOMAIN,
+      ],
+   },
    /**
     * If you have `experimental: { appDir: true }` set, then you must comment the below `i18n` config
     * out.
@@ -25,4 +28,4 @@ const config = {
    },
 };
 
-export default withTwin(config);
+export default config;

@@ -9,11 +9,16 @@ import { lowlight } from "lowlight/lib/core";
 export const createEditor = (options: {
    transition: TransitionStartFunction;
    editable?: boolean;
+   autofocus?: boolean;
    content?: Content;
 }) => {
    return new Editor({
       editable: options.editable,
+      autofocus: options.autofocus,
       editorProps: {
+         attributes: {
+            class: "focus:outline-none subpixel-antialiased"
+         },
          handleKeyDown: (view, event) => {
             if (event.key === "Tab") {
                event.preventDefault();

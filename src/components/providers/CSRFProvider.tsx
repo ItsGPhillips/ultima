@@ -1,6 +1,7 @@
 "use client";
 import { PropsWithChildren, useState } from "react";
 import { useIsomorphicLayoutEffect } from "usehooks-ts";
+import { getBaseUrl } from "~/utils/getBaseUrl";
 
 declare global {
    interface Window {
@@ -31,7 +32,7 @@ export const CSRFProvider = (props: CSRFProviderProps) => {
       const originalFetch = window.fetch;
 
       const csrfToken = props.csrfToken ?? "NOT SET";
-      window.fetch = function (input, init) {
+      window.fetch = function (input: RequestInfo | URL, init) {
          if (!init) {
             init = {};
          }

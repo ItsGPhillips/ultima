@@ -13,6 +13,10 @@ import { Post as PostType } from "~/server/database/types";
 import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 import { EditorContent } from "@tiptap/react";
 import { useRichTextEditor } from "~/hooks/useRichTextEditor";
+import NextImage from "next/image";
+import { env } from "~/env.mjs";
+import { motion } from "framer-motion";
+import { Carousel } from "../ui/Carousel";
 
 const PostInfo = (props: PostType) => {
    return (
@@ -47,19 +51,64 @@ const PostInfo = (props: PostType) => {
    );
 };
 
+const ImageDisplay = (props: { name: string }) => {
+   const image = new Image();
+   image.src = `${env.NEXT_PUBLIC_CLOUDFLARE_STORAGE_URL}/${props.name}`;
+   return (
+      <div className="flex h-full w-full px-1 items-stretch justify-center bg-black/60">
+         <NextImage
+            src={`${env.NEXT_PUBLIC_CLOUDFLARE_STORAGE_URL}/${props.name}`}
+            alt={""}
+            width={0}
+            height={0}
+            sizes="100vh"
+            loading="lazy"
+            quality={80}
+            className="object-contain"
+            style={{
+               width: "auto",
+               height: "100%",
+            }}
+            blurDataURL="/image-placeholder.jpeg"
+         />
+      </div>
+   );
+};
+
 export const Post = (props: PropsWithChildren<PostType>) => {
    const editor = useRichTextEditor({ editable: false, content: props.body });
 
+   const images = props.images ?? [];
+
    return (
-      <div className="isolate z-[400] flex rounded-md outline-[1px] outline-white/50 hover:outline">
+      <motion.div
+         layout
+         className="isolate z-[400] flex rounded-md outline-[1px] outline-white/50 hover:outline"
+         style={{ overflowAnchor: "none" }}
+      >
          <VoteButtonGroup className="mt-2 hidden flex-col gap-2 md:flex" />
          <div className="flex h-fit min-h-max flex-1 flex-col gap-2 rounded-md bg-zinc-800 p-3 pb-0">
             <PostInfo {...props} />
-            <h4 className="block text-xl">{props.title}</h4>
-
-            <EditorContent editor={editor} className="min-h-[4rem]" />
-            {/* <p className="max-w-[80ch] text-sm">{props.body}</p> */}
-
+            <div className="flex flex-col items-stretch gap-2">
+               {editor.getText().trim().length > 0 && (
+                  <EditorContent
+                     editor={editor}
+                     autoFocus={false}
+                     className=""
+                  />
+               )}
+               {images.length > 0 && (
+                  <Carousel className="h-[24rem]">
+                     {images.map((name) => {
+                        return (
+                           <Carousel.Slide className="relative" key={name}>
+                              <ImageDisplay name={name} />
+                           </Carousel.Slide>
+                        );
+                     })}
+                  </Carousel>
+               )}
+            </div>
             <div className="flex w-full items-stretch gap-2 border-t-[1px] border-white/20 md:gap-4">
                <VoteButtonGroup className="flex md:hidden" />
                <ActionButton className="group relative aspect-square min-w-fit md:aspect-auto [&>*]:hover:opacity-100">
@@ -85,6 +134,6 @@ export const Post = (props: PropsWithChildren<PostType>) => {
                </ActionButton>
             </div>
          </div>
-      </div>
+      </motion.div>
    );
 };
