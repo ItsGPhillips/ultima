@@ -41,12 +41,15 @@ export const Header = async () => {
 
       const name = `${profile.firstName} ${profile.firstName}`;
       content = (
-         <header className={cn("mx-4 h-full w-[inherit]")}>
+         <header className={cn("relative flex mx-4 h-full w-[inherit]")}>
+            <div className="w-60 border-2 flex items-center justify-center">LOGO</div>
+            {/* <div className="absolute flex items-center justify-stretch h-full left-1/2 -translate-x-1/2 w-[var(--feed-width)]">
+               <input type="text" className="w-full p-2 rounded text-black my-2"/>
+            </div> */}
             <div
-               className="float-right flex h-full items-center gap-4"
+               className="ml-auto flex h-full items-center gap-4"
                suppressHydrationWarning
             >
-               {name}
                <span className="mr-2 hidden sm:block">
                   {profile.page.handle}
                </span>

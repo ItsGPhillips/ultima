@@ -1,6 +1,6 @@
 "use client";
 
-import { mergeRefs, useResizeObserver } from "@react-aria/utils";
+import { mergeProps, mergeRefs, useResizeObserver } from "@react-aria/utils";
 import { motion, useMotionTemplate, useSpring } from "framer-motion";
 import {
    ComponentPropsWithRef,
@@ -11,7 +11,8 @@ import {
    useRef,
    useState,
 } from "react";
-import { useMove } from "react-aria";
+import { useLongPress, useMove, usePress } from "react-aria";
+import { useLockedBody } from "usehooks-ts";
 import { cn } from "~/utils/cn";
 
 export type CarouselSlideProps = ComponentPropsWithRef<"div"> & {};
@@ -70,6 +71,9 @@ export const Root = forwardRef<HTMLDivElement, CarouselContainerProps>(
                "relative overflow-hidden rounded-xl",
                props.className
             )}
+            onPointerDown={() => {
+               ref?.current?.focus();
+            }}
          >
             <Container
                width={size?.width ?? 1}
@@ -100,6 +104,13 @@ const Container = (props: {
    dx.set(currentOffset);
 
    const accumOffset = useRef<number>(0);
+
+   const { pressProps } = usePress({
+      onPressStart(e) {
+      },
+      onPressEnd(e) {
+      },
+   });
 
    const { moveProps } = useMove({
       onMove(e) {
@@ -136,7 +147,7 @@ const Container = (props: {
             minWidth: props.width,
             transform,
          }}
-         {...(moveProps as any)}
+         {...(mergeProps(moveProps, pressProps) as any)}
       >
          {props.children}
       </motion.div>
