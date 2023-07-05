@@ -1,0 +1,40 @@
+{
+   "name": "website-utils",
+   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+   "sourceRoot": "libs/website/utils/src",
+   "projectType": "library",
+   "targets": {
+      "build": {
+         "executor": "@nx/js:swc",
+         "outputs": ["{options.outputPath}"],
+         "options": {
+            "outputPath": "dist/libs/website/utils",
+            "main": "libs/website/utils/src/index.ts",
+            "tsConfig": "libs/website/utils/tsconfig.lib.json",
+            "assets": ["libs/website/utils/*.md"]
+         }
+      },
+      "lint": {
+         "executor": "@nx/linter:eslint",
+         "outputs": ["{options.outputFile}"],
+         "options": {
+            "lintFilePatterns": ["libs/website/utils/**/*.ts"]
+         }
+      },
+      "test": {
+         "executor": "@nx/jest:jest",
+         "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+         "options": {
+            "jestConfig": "libs/website/utils/jest.config.ts",
+            "passWithNoTests": true
+         },
+         "configurations": {
+            "ci": {
+               "ci": true,
+               "codeCoverage": true
+            }
+         }
+      }
+   },
+   "tags": []
+}
