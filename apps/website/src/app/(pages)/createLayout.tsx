@@ -12,8 +12,8 @@ export const createLayout = async (ctx: LayoutContext) => {
          <div className="group relative flex flex-row items-stretch justify-center">
             <div
                className={cn(
-                  "tmd:block sticky hidden",
-                  "top-[var(--header-height)] h-full"
+                  "tmd:block sticky hidden overflow-hidden",
+                  "top-[var(--header-height)] h-full flex-1 "
                )}
             >
                {ctx.pageinfo}
@@ -21,8 +21,8 @@ export const createLayout = async (ctx: LayoutContext) => {
             <FeedContainer>{ctx.children}</FeedContainer>
             <div
                className={cn(
-                  "txl:block sticky hidden",
-                  "top-[var(--header-height)] h-full shrink"
+                  "txl:block sticky hidden overflow-hidden",
+                  "top-[var(--header-height)] h-full shrink flex-1"
                )}
             >
                {ctx.sidebar}
@@ -34,14 +34,14 @@ export const createLayout = async (ctx: LayoutContext) => {
 
 const FeedContainer = (props: PropsWithChildren) => {
    const ua = userAgent({ headers: headers() });
-   const tabletClasses = "flex flex-col tmd:basis-2/3";
+   const tabletClasses = "flex flex-col tmd:basis-2/3"; 
 
    return (
       <div
          className={cn("", {
             "mx-1 basis-full": ua.device.type === "mobile",
             [tabletClasses]: ua.device.type === "tablet",
-            "mx-1 max-w-2xl shrink basis-full md:ml-0 md:basis-1/2":
+            "mx-1 max-w-2xl shrink basis-full md:ml-0 md:basis-2/3":
                ua.device.type === undefined,
          })}
       >

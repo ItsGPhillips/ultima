@@ -15,13 +15,13 @@ const Sidebar = () => {
       <div
          suppressHydrationWarning
          className={cn(
-            "float-left h-[var(--available-area-height)] border-l-[1px] border-white/10 py-2 text-white",
-            "flex w-64 flex-col justify-start"
+            "float-left h-[var(--available-area-height)] border-l-[1px] border-white/10 my-2 text-white",
+            "flex w-full max-w-[22rem] flex-col justify-start px-1"
          )}
       >
          <Seperator />
          <Header>Trending</Header>
-         <div className="ml-1 flex w-full flex-col gap-1">
+         <div className="flex w-full flex-col gap-1">
             {Array(5)
                .fill(0)
                .map(() => {

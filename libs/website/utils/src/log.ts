@@ -52,10 +52,6 @@ class Logger {
             )} ${formatedValue}`;
 
             out = out + "".padStart(depth * 2, " ") + line + "\n";
-
-            if (idx !== entries.length - 1) {
-               out + "\n";
-            }
          });
       }
 
@@ -109,8 +105,8 @@ class Logger {
          const [level, title] = this.genLogLevel(inLevel, inTitle ?? "");
          const out = this.format(data, 0)
             .split("\n")
-            .map((line) => "  " + line + "\n")
-            .join("");
+            .map((line) => "  " + line)
+            .join("\n");
 
          const date = new Date().toTimeString().slice(0, 8);
          const output = `[ ${chalk.grey(date)} ${level} ] ${chalk.white(

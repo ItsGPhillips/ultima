@@ -10,42 +10,6 @@ import { withAuth } from './utils';
 
 const POSTS_PER_REQUEST_LIMIT = 5;
 
-// export const hasMorePostsAction = async (options: {
-//    handle: string;
-//    sortBy: "NEWEST";
-//    lastPost: {
-//       id: string;
-//       postedAt: string;
-//    } | null;
-// }) => {
-//    if (!options.lastPost) {
-//       const [row] = await db
-//          .select({ id: schema.post.id })
-//          .from(schema.post)
-//          .where(sql`${schema.post.handle} = ${options.handle}`)
-//          .orderBy(desc(schema.post.postedAt))
-//          .limit(1);
-
-//       return row !== undefined;
-//    }
-
-//    console.log("got herer", options.lastPost)
-
-//    const [row] = await db
-//       .select({ id: schema.post.id })
-//       .from(schema.post)
-//       .where(
-//          sql`${schema.post.handle} = ${options.handle} AND
-//          ${schema.post.postedAt} < ${options.lastPost.postedAt}::TIMESTAMP`
-//       )
-//       .orderBy(desc(schema.post.postedAt))
-//       .limit(1);
-
-//    console.log("row", row)
-
-//    return row !== undefined;
-// };
-
 export const getPostsAction = async (options: {
   handle: string;
   sortBy: 'NEWEST';

@@ -26,7 +26,7 @@ const Page = async (ctx: any) => {
       return <>No Page</>;
    }
 
-   Log.debug(page)
+   Log.debug(page);
 
    const date = new Date(page.createdAt)
       .toDateString()
@@ -38,7 +38,7 @@ const Page = async (ctx: any) => {
       <div
          className={cn(
             "float-right h-[var(--available-area-height)] border-r-[1px] border-white/10 py-2 text-white",
-            "flex w-64 flex-col justify-start"
+            "flex w-full max-w-[22rem] flex-col justify-start"
          )}
       >
          <div className="flex w-full basis-12 items-end pl-2">

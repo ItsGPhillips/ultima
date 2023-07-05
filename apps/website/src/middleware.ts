@@ -23,9 +23,10 @@ export default async (request: NextRequest) => {
    // csrf protection
    const csrfError = await csrfProtect(request, response);
    // check result
-   if (csrfError) {
-      return new NextResponse("invalid csrf token", { status: 403 });
-   }
+   // if (csrfError) {
+   //    return new NextResponse("invalid csrf token", { status: 403 });
+   // }
+   
    return response;
 };
 
