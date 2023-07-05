@@ -1,0 +1,1 @@
+ALTER TABLE "post" ADD COLUMN "body-test" jsonb;

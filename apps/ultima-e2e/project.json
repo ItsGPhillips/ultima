@@ -8,12 +8,12 @@
       "executor": "@nx/cypress:cypress",
       "options": {
         "cypressConfig": "apps/ultima-e2e/cypress.config.ts",
-        "devServerTarget": "ultima:serve:development",
+        "devServerTarget": "website:serve:development",
         "testingType": "e2e"
       },
       "configurations": {
         "production": {
-          "devServerTarget": "ultima:serve:production"
+          "devServerTarget": "website:serve:production"
         }
       }
     },
@@ -26,5 +26,5 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["ultima"]
+  "implicitDependencies": ["website"]
 }

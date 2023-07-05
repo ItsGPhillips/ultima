@@ -1,0 +1,74 @@
+{
+   "name": "website",
+   "$schema": "../../node_modules/nx/schemas/project-schema.json",
+   "sourceRoot": "apps/website",
+   "projectType": "application",
+   "targets": {
+      "build": {
+         "executor": "@nx/next:build",
+         "outputs": ["{options.outputPath}"],
+         "defaultConfiguration": "production",
+         "postcssConfig": "apps/website/postcss.config.js",
+         "options": {
+            "root": "apps/website",
+            "outputPath": "dist/apps/website"
+         },
+         "configurations": {
+            "development": {
+               "outputPath": "apps/website"
+            },
+            "production": {}
+         }
+      },
+      "serve": {
+         "executor": "@nx/next:server",
+         "defaultConfiguration": "development",
+         "postcssConfig": "apps/website/postcss.config.js",
+         "options": {
+            "buildTarget": "website:build",
+            "dev": true
+         },
+         "configurations": {
+            "development": {
+               "buildTarget": "website:build:development",
+               "dev": true
+            },
+            "production": {
+               "buildTarget": "website:build:production",
+               "dev": false
+            }
+         }
+      },
+      "export": {
+         "executor": "@nx/next:export",
+         "postcssConfig": "apps/website/postcss.config.js",
+         "options": {
+            "buildTarget": "website:build:production"
+         }
+      },
+      "test": {
+         "executor": "@nx/jest:jest",
+         "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+         "postcssConfig": "apps/website/postcss.config.js",
+         "options": {
+            "jestConfig": "apps/website/jest.config.ts",
+            "passWithNoTests": true
+         },
+         "configurations": {
+            "ci": {
+               "ci": true,
+               "codeCoverage": true
+            }
+         }
+      },
+      "lint": {
+         "executor": "@nx/linter:eslint",
+         "outputs": ["{options.outputFile}"],
+         "postcssConfig": "apps/website/postcss.config.js",
+         "options": {
+            "lintFilePatterns": ["apps/website/**/*.{ts,tsx,js,jsx}"]
+         }
+      }
+   },
+   "tags": []
+}
