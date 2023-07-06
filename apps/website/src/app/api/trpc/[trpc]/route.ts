@@ -1,12 +1,19 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { appRouter } from "@website/api/server";
+import { appRouter, createTRPCContext } from "@website/api/server";
+import { auth } from "@website/lucia";
+import { NextRequest } from "next/server";
+import { cookies } from "next/headers";
 
-const handler = (req: Request) => {
+const handler = (request: NextRequest) => {
+   const authRequest = auth.handleRequest({
+      request,
+      cookies,
+   });
    return fetchRequestHandler({
       endpoint: `/api/trpc`,
-      req,
+      req: request,
       router: appRouter,
-      createContext: () => ({}),
+      createContext: () => createTRPCContext({ authRequest }),
       batching: {
          enabled: true,
       },
