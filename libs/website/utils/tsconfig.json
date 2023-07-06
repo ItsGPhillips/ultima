@@ -9,9 +9,7 @@
       "noImplicitReturns": true,
       "noFallthroughCasesInSwitch": true
    },
-   "include": [
-      "**/*.ts"
-   ],
+   "include": [],
    "references": [
       {
          "path": "./tsconfig.lib.json"

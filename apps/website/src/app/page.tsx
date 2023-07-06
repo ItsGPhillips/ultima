@@ -1,9 +1,15 @@
-import { appRouter } from "@website/api"
+"use client";
 
-const Page = async () => {
-   const caller = appRouter.createCaller({})
-   const greeting = await caller.greeting.getGreeting();
-   return <>{greeting.message}</>
+import { api } from "@website/api/client";
+import { useEffect, useState } from "react";
+
+const Page = () => {
+   const [message, setMessage] = useState("");
+   useEffect(() => {
+      api.greeting.getGreeting.query().then((data) => setMessage(data.message));
+   }, []);
+
+   return <>{message}</>;
 };
 
 export default Page;
