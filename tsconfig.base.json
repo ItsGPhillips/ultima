@@ -12,10 +12,7 @@
       "importHelpers": true,
       "target": "ES6",
       "module": "esnext",
-      "lib": [
-         "es2020",
-         "dom"
-      ],
+      "lib": ["es2020", "dom"],
       "skipLibCheck": true,
       "strict": true,
       "skipDefaultLibCheck": true,
@@ -24,9 +21,8 @@
       "allowSyntheticDefaultImports": true,
       "baseUrl": ".",
       "paths": {
-         "@website/actions": [
-            "libs/website/actions/src/index.ts"
-         ],
+         "@website/actions": ["libs/website/actions/src/index.ts"],
+         "@website/api": ["libs/website/api/src/index.ts"],
          "@website/components/header": [
             "libs/website/components/header/src/index.tsx"
          ],
@@ -42,28 +38,15 @@
          "@website/components/shared": [
             "libs/website/components/shared/src/index.ts"
          ],
-         "@website/database": [
-            "libs/website/database/src/index.ts"
-         ],
-         "@website/env": [
-            "libs/website/env/src/index.mjs"
-         ],
-         "@website/hooks": [
-            "libs/website/hooks/src/index.ts"
-         ],
-         "@website/lucia": [
-            "libs/website/lucia/src/index.ts"
-         ],
+         "@website/database": ["libs/website/database/src/index.ts"],
+         "@website/env": ["libs/website/env/src/index.mjs"],
+         "@website/hooks": ["libs/website/hooks/src/index.ts"],
+         "@website/lucia": ["libs/website/lucia/src/index.ts"],
          "@website/rich-text-editor": [
             "libs/website/rich-text-editor/src/index.ts"
          ],
-         "@website/utils": [
-            "libs/website/utils/src/index.ts"
-         ]
+         "@website/utils": ["libs/website/utils/src/index.ts"]
       }
    },
-   "exclude": [
-      "node_modules",
-      "tmp"
-   ]
+   "exclude": ["node_modules", "tmp"]
 }

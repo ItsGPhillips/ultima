@@ -1,0 +1,40 @@
+{
+   "name": "website-api",
+   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+   "sourceRoot": "libs/website/api/src",
+   "projectType": "library",
+   "targets": {
+      "build": {
+         "executor": "@nx/js:swc",
+         "outputs": ["{options.outputPath}"],
+         "options": {
+            "outputPath": "dist/libs/website/api",
+            "main": "libs/website/api/src/index.ts",
+            "tsConfig": "libs/website/api/tsconfig.lib.json",
+            "assets": ["libs/website/api/*.md"]
+         }
+      },
+      "lint": {
+         "executor": "@nx/linter:eslint",
+         "outputs": ["{options.outputFile}"],
+         "options": {
+            "lintFilePatterns": ["libs/website/api/**/*.ts"]
+         }
+      },
+      "test": {
+         "executor": "@nx/jest:jest",
+         "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+         "options": {
+            "jestConfig": "libs/website/api/jest.config.ts",
+            "passWithNoTests": true
+         },
+         "configurations": {
+            "ci": {
+               "ci": true,
+               "codeCoverage": true
+            }
+         }
+      }
+   },
+   "tags": []
+}
