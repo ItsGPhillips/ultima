@@ -16,8 +16,5 @@ export const signOutUser = async (req: NextRequest): Promise<NextResponse> => {
 
    return NextResponse.json(null, {
       status: 302,
-      headers: {
-         location: "/",
-      },
    });
 };

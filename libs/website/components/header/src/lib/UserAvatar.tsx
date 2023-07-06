@@ -1,17 +1,23 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { AriaButton, Avatar, Popover } from "@website/components/shared";
-import { useState } from "react";
+import {
+   AriaButton,
+   Avatar,
+   Popover,
+   Spinner,
+} from "@website/components/shared";
+import { useState, useTransition } from "react";
 import { Profile } from "@website/database";
 
 export const UserAvatar = (props: { profile: Profile; handle: string }) => {
    const [menuOpen, setMenuOpen] = useState(false);
+   const [loading, transition] = useTransition();
    return (
       <Popover.Root open={menuOpen} onOpenChange={setMenuOpen}>
-         <Popover.Trigger className="ml-auto mr-4 flex items-center gap-4 hover:bg-white/5 my-1 p-2 rounded-md">
+         <Popover.Trigger className="my-1 ml-auto mr-4 flex items-center gap-4 rounded-md p-2 hover:bg-white/5">
             <div className="flex flex-col items-end">
-               <div className="hidden text-sm sm:block bold">{`${props.profile.firstName} ${props.profile.lastName}`}</div>
-               <div className="hidden text-xs text-white/70 italic sm:block">{`@${props.handle}`}</div>
+               <div className="bold hidden text-sm sm:block">{`${props.profile.firstName} ${props.profile.lastName}`}</div>
+               <div className="hidden text-xs italic text-white/70 sm:block">{`@${props.handle}`}</div>
             </div>
             <Avatar name={props.handle} />
          </Popover.Trigger>
@@ -33,8 +39,24 @@ export const UserAvatar = (props: { profile: Profile; handle: string }) => {
                            <span>{`${props.profile.firstName} ${props.profile.lastName}`}</span>
                            <span>Account</span>
                            <span>Settings</span>
-                           <AriaButton className="rounded-lg border-2 border-red-400 bg-red-400/30 px-2 py-1 text-sm text-white hover:bg-red-400/50">
-                              Sign Out
+                           <AriaButton
+                              className="rounded-lg border-2 border-red-400 bg-red-400/30 px-2 py-1 text-sm text-white hover:bg-red-400/50"
+                              onPress={() => {
+                                 transition(async () => {
+                                    const { ok } = await fetch(
+                                       "api/auth/user.signout",
+                                       {
+                                          method: "POST",
+                                          body: null,
+                                       }
+                                    );
+                                    if (ok) {
+                                       window.location.reload();
+                                    }
+                                 });
+                              }}
+                           >
+                              {loading ? <Spinner /> : "Sign Out"}
                            </AriaButton>
                         </div>
                      </motion.div>
