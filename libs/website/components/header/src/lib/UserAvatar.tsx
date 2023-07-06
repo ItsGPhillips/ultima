@@ -8,6 +8,7 @@ import {
 } from "@website/components/shared";
 import { useState, useTransition } from "react";
 import { Profile } from "@website/database";
+import { api } from "@website/api/client";
 
 export const UserAvatar = (props: { profile: Profile; handle: string }) => {
    const [menuOpen, setMenuOpen] = useState(false);
@@ -41,18 +42,9 @@ export const UserAvatar = (props: { profile: Profile; handle: string }) => {
                            <span>Settings</span>
                            <AriaButton
                               className="rounded-lg border-2 border-red-400 bg-red-400/30 px-2 py-1 text-sm text-white hover:bg-red-400/50"
-                              onPress={() => {
-                                 transition(async () => {
-                                    const { ok } = await fetch(
-                                       "api/auth/user.signout",
-                                       {
-                                          method: "POST",
-                                          body: null,
-                                       }
-                                    );
-                                    if (ok) {
-                                       window.location.reload();
-                                    }
+                              onPress={async () => {
+                                 await api.auth.signOut.mutate().then(() => {
+                                    window.location.reload();
                                  });
                               }}
                            >

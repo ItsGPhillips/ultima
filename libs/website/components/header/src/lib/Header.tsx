@@ -106,6 +106,7 @@ const HeaderImpl = async () => {
          )}
       >
          {!!profile && <UserAvatar profile={profile} handle={profile.page.handle} />}
+         {!profile && <SignInButton />}
       </header>
    );
 };

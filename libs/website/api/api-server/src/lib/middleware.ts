@@ -3,7 +3,6 @@ import { trpc } from "./trpc";
 import { Log } from "@website/utils";
 
 export const handleAuth = trpc.middleware(async ({ ctx, next }) => {
-   Log.debug(ctx.authRequest);
    const validateResponse = await ctx.authRequest.validate();
    return next({
       ctx: {
