@@ -5,6 +5,8 @@ import { motion, useMotionTemplate, useSpring } from "framer-motion";
 import {
    ComponentPropsWithRef,
    Dispatch,
+   DragEvent,
+   PropsWithChildren,
    SetStateAction,
    cloneElement,
    forwardRef,
@@ -13,6 +15,7 @@ import {
 } from "react";
 import { useMove, usePress } from "react-aria";
 import { cn } from "@website/utils";
+import { AriaButton } from "../button/aria";
 
 export type CarouselSlideProps = ComponentPropsWithRef<"div"> & {};
 export const Slide = forwardRef<HTMLDivElement, CarouselSlideProps>(
@@ -149,6 +152,10 @@ const Container = (props: {
          {props.children}
       </motion.div>
    );
+};
+
+const Button = (props: PropsWithChildren) => {
+   return <AriaButton>{props.children}</AriaButton>;
 };
 
 export const Carousel = Object.assign(Root, { Slide });

@@ -5114,6 +5114,13 @@
   dependencies:
     "@t3-oss/env-core" "0.6.0"
 
+"@tanstack/form-core@0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@tanstack/form-core/-/form-core-0.0.11.tgz#11e4b9ee5375db3cb17efc53dd7d5774255b38ac"
+  integrity sha512-Sv7b9IG0XmBoDbDe0nXrTTl9xl05TA4ir0pwr/xJwNP683CNRIzBpug3/WVzWoQVLCvRvvmo3t12N75Ip8HQNg==
+  dependencies:
+    "@tanstack/store" "0.0.1-beta.89"
+
 "@tanstack/match-sorter-utils@^8.7.0":
   version "8.8.4"
   resolved "https://registry.yarnpkg.com/@tanstack/match-sorter-utils/-/match-sorter-utils-8.8.4.tgz#0b2864d8b7bac06a9f84cb903d405852cc40a457"
@@ -5125,6 +5132,14 @@
   version "4.29.19"
   resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.29.19.tgz#49ccbd0606633d1e55baf3b91ab7cc7aef411b1d"
   integrity sha512-uPe1DukeIpIHpQi6UzIgBcXsjjsDaLnc7hF+zLBKnaUlh7jFE/A+P8t4cU4VzKPMFB/C970n/9SxtpO5hmIRgw==
+
+"@tanstack/react-form@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-form/-/react-form-0.0.11.tgz#dc8306edcb5539f0bd56f13e45501054703b5809"
+  integrity sha512-76tyMuDVtHzWHSUSdYPIfpo06RexmSAg4dKMaBToH0yww8l1Y/PNKdoUGcmUHUUFstObm2ufw1VG2YAnsVWx8Q==
+  dependencies:
+    "@tanstack/form-core" "0.0.11"
+    "@tanstack/react-store" "0.0.1-beta.85"
 
 "@tanstack/react-query-devtools@^4.29.12":
   version "4.29.19"
@@ -5142,6 +5157,24 @@
   dependencies:
     "@tanstack/query-core" "4.29.19"
     use-sync-external-store "^1.2.0"
+
+"@tanstack/react-store@0.0.1-beta.85":
+  version "0.0.1-beta.85"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-store/-/react-store-0.0.1-beta.85.tgz#dc3bf3ec30d9b7f539fda551fc07df11b798c7f6"
+  integrity sha512-5APLxQOHgws735Va5ndbS6aa9pIILcximTr5dQeEFRzCNqjLyJ6YHGDuqng9zLMLzCyNILmdEtpNW0tp5l/tNw==
+  dependencies:
+    "@tanstack/store" "0.0.1-beta.85"
+    use-sync-external-store "^1.2.0"
+
+"@tanstack/store@0.0.1-beta.85":
+  version "0.0.1-beta.85"
+  resolved "https://registry.yarnpkg.com/@tanstack/store/-/store-0.0.1-beta.85.tgz#d6f1d2c66787d15e796819b94be08de44be17cbf"
+  integrity sha512-gUn8i4mhS7V5yRTu6NosoKuUBfw4w36JHx0rg2MJ5kAiKukISoTqlzUKKKzmVvVPL6H1xwaDGEf6bmLzLlgZEQ==
+
+"@tanstack/store@0.0.1-beta.89":
+  version "0.0.1-beta.89"
+  resolved "https://registry.yarnpkg.com/@tanstack/store/-/store-0.0.1-beta.89.tgz#4ba77e66a34d7c6dbf33401daffcb505c3022823"
+  integrity sha512-YW2aAhsXI4QYLXRnxZzB7MgEah91itQcWAjN3GYg1HKHxPv/11T5bL1CUCSxFLTI0f+45uNRjsmof6eqsN3ECA==
 
 "@testing-library/dom@^9.0.0":
   version "9.3.1"
@@ -12320,6 +12353,11 @@ react-dropzone@^14.2.3:
     attr-accept "^2.2.2"
     file-selector "^0.6.0"
     prop-types "^15.8.1"
+
+react-hook-form@^7.45.1:
+  version "7.45.1"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.45.1.tgz#e352c7f4dbc7540f0756abbb4dcfd1122fecc9bb"
+  integrity sha512-6dWoFJwycbuFfw/iKMcl+RdAOAOHDiF11KWYhNDRN/OkUt+Di5qsZHwA0OwsVnu9y135gkHpTw9DJA+WzCeR9w==
 
 react-icons@^4.9.0:
   version "4.10.1"

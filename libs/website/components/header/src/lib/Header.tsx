@@ -7,6 +7,7 @@ import { currentUser } from "@website/actions";
 import { db } from "@website/database";
 import { RemoveScroll } from "react-remove-scroll";
 import { UserAvatar } from "./UserAvatar";
+import { CreateAccountButton } from "./create-account-button";
 
 export const HeaderOld = async () => {
    const user = await currentUser();
@@ -94,8 +95,6 @@ const getProfile = async () => {
    return null;
 };
 
-
-
 const HeaderImpl = async () => {
    const profile = await getProfile();
    return (
@@ -105,8 +104,17 @@ const HeaderImpl = async () => {
             RemoveScroll.classNames.fullWidth
          )}
       >
-         {!!profile && <UserAvatar profile={profile} handle={profile.page.handle} />}
-         {!profile && <SignInButton />}
+         <div className="ml-auto mr-4 flex items-center">
+            {!!profile && (
+               <UserAvatar profile={profile} handle={profile.page.handle} />
+            )}
+            {!profile && (
+               <div className="flex flex-nowrap items-center gap-2">
+                  <SignInButton />
+                  <CreateAccountButton />
+               </div>
+            )}
+         </div>
       </header>
    );
 };

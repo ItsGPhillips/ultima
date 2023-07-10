@@ -57,7 +57,7 @@ const DialogContent = forwardRef<HTMLDivElement, ComponentPropsWithRef<"div">>(
                            // maxWidth: "min(100ch, calc(100% - 0.5rem))",
                         }}
                         className={cn(
-                           "fixed z-[1000] w-full overflow-hidden rounded-xl border-[2px] border-zinc-600 shadow-2xl shadow-black outline-none"
+                           "fixed z-[1000] w-full overflow-hidden rounded-xl border-[1px] border-zinc-700 shadow-2xl shadow-black outline-none"
                         )}
                         {...(props as any)}
                      >

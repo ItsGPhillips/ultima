@@ -20,6 +20,7 @@ export const useDialogState = () => {
 export type DialogStateProviderProps = PropsWithChildren<{
   defaultOpen?: boolean;
   modal?: boolean;
+  interceptChangeCallback?: (change: boolean) => boolean;
 }>;
 
 export const DialogStateProvider = (props: DialogStateProviderProps) => {
@@ -52,6 +53,9 @@ export const DialogStateProvider = (props: DialogStateProviderProps) => {
       <DialogPrimitive.Root
         open={isOpen.value}
         onOpenChange={(value) => {
+          if(props.interceptChangeCallback) {
+            value = props.interceptChangeCallback(value);
+          }
           isOpen.setValue(value);
         }}
         modal={props.modal}

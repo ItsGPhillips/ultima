@@ -4,6 +4,8 @@ import { auth } from "@website/lucia";
 
 import { SIGN_IN_SCHEMA, checkSession, getKey } from "./signin.utils";
 import { CREATE_ACCOUNT_SCHEMA, createUserImpl } from "./create.utils";
+import { Log } from "@website/utils";
+import { z } from "zod";
 
 export const authRouter = router({
    create: publicProcedure
@@ -33,8 +35,22 @@ export const authRouter = router({
       }),
 
    signOut: publicProcedure.use(authenicated).mutation(async ({ ctx }) => {
+      Log.info("signOut");
+
       await auth.invalidateSession(ctx.auth.sessionId);
       auth.deleteDeadUserSessions(ctx.auth.userId);
-      ctx.authRequest.setSession(null); // delete session cookie
+      ctx.authRequest.setSession(null);
    }),
+   checkEmail: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .query(async ({ ctx, input }) => {
+         try {
+            const key = await auth.getKey("email", input.email);
+            Log.debug(key);
+         } catch (e) {
+            if (e instanceof Error) {
+               Log.error(e.message, "Error");
+            }
+         }
+      }),
 });
