@@ -6,10 +6,9 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cn } from "@website/utils";
 import {
    DialogStateProvider,
+   UnmangaedDialogStateProvider,
    useDialogState as _useDialogState,
 } from "./Provider";
-
-// TODO: custom data
 
 const DialogContent = forwardRef<HTMLDivElement, ComponentPropsWithRef<"div">>(
    (props, fref) => {
@@ -57,7 +56,7 @@ const DialogContent = forwardRef<HTMLDivElement, ComponentPropsWithRef<"div">>(
                            // maxWidth: "min(100ch, calc(100% - 0.5rem))",
                         }}
                         className={cn(
-                           "fixed z-[1000] w-full overflow-hidden rounded-xl border-[1px] border-zinc-700 shadow-2xl shadow-black outline-none max-w-full"
+                           "fixed z-[1000] w-full max-w-full overflow-hidden rounded-xl border-[1px] border-zinc-700 shadow-2xl shadow-black outline-none"
                         )}
                         {...(props as any)}
                      >
@@ -71,10 +70,12 @@ const DialogContent = forwardRef<HTMLDivElement, ComponentPropsWithRef<"div">>(
    }
 );
 
+export type { DialogState, DialogStateProviderProps } from "./Provider";
 export namespace Dialog {
    export const useDialogState = _useDialogState;
    export const Content = DialogContent;
    export const Provider = DialogStateProvider;
+   export const UnmangedProvider = UnmangaedDialogStateProvider;
    export const Trigger = DialogPrimitive.Trigger;
    export const Close = DialogPrimitive.Close;
    export const Description = DialogPrimitive.Description;

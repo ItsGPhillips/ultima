@@ -9,6 +9,8 @@ import {
 } from "@website/components/providers";
 import { Tooltip } from "@website/components/shared";
 import { headers } from "next/headers";
+import { AuthDialogContainer } from "@website/components/auth";
+
 const font = Roboto({ weight: ["300", "400", "700"], subsets: ["latin"] });
 
 export const metadata = {
@@ -33,10 +35,12 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
             >
                <ReactQueryProvider>
                   <Tooltip.Provider delayDuration={80}>
-                     <Header />
-                     <div className="z-[500] mt-[var(--header-height)] w-full">
-                        {children}
-                     </div>
+                     <AuthDialogContainer>
+                        <Header />
+                        <div className="z-[500] mt-[var(--header-height)] w-full">
+                           {children}
+                        </div>
+                     </AuthDialogContainer>
                   </Tooltip.Provider>
                </ReactQueryProvider>
             </body>

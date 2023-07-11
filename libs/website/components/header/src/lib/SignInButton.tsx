@@ -3,25 +3,16 @@
 import { useRouter } from "next/navigation";
 import { api } from "@website/api/client";
 import { AriaButton } from "@website/components/shared";
+import { AuthEvents } from "@website/components/auth";
 
-export type SignInButtonProps = {};
-
-export const SignInButton = (props: SignInButtonProps) => {
-   const router = useRouter();
-
+export const SignInButton = () => {
    const onPress = async () => {
-      await api.auth.signIn.mutate({
-         id: "email",
-         password: "12345",
-         email: "jood@mail.com",
-      });
-
-      router.refresh();
+      window.dispatchEvent(AuthEvents.OPEN_SIGNIN_DIALOG_EVENT);
    };
 
    return (
       <AriaButton
-         className="text-white py-2 px-4 hover:bg-white/10"
+         className="px-4 py-2 text-white hover:bg-white/10"
          onPress={onPress}
       >
          Sign In

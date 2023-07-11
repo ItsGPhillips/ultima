@@ -1,106 +1,26 @@
 "use client";
 
 import { AriaButton, Dialog } from "@website/components/shared";
-import { type FieldState, useCreateAccountState } from "./provider";
+import { useCreateAccountState, Provider } from "./provider";
 import { observer } from "mobx-react-lite";
-import { action } from "mobx";
-import { VisuallyHidden, useFocusRing } from "react-aria";
-import { cn } from "@website/utils";
 import { MdAlternateEmail } from "react-icons/md";
 import { HiOutlineMail } from "react-icons/hi";
+import { useButton } from "@react-aria/button";
 import {
    AnimatePresence,
    motion,
    useAnimate,
    useMotionValue,
 } from "framer-motion";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaFacebookSquare, FaGoogle, FaTwitter } from "react-icons/fa";
 import { BiSolidLockAlt, BiSolidLockOpenAlt } from "react-icons/bi";
 import { BsCheckLg } from "react-icons/bs";
 import Image from "next/image";
-
-type InputProps = {
-   name: string;
-   state: FieldState;
-   preInput?: JSX.Element;
-   postInput?: JSX.Element;
-   labelKind: "hidden" | "placeholder" | "normal";
-   placeholder?: string;
-};
-
-const Input = observer((props: InputProps) => {
-   const { focusProps, isFocusVisible } = useFocusRing({
-      within: true,
-      isTextInput: true,
-   });
-   return (
-      <div
-         key={`${props.name}-${props.state.label}`}
-         className="flex flex-col items-stretch gap-1 p-2"
-      >
-         {props.labelKind === "hidden" ? (
-            <VisuallyHidden>
-               <label className="ml-1 text-white/80" htmlFor={props.name}>
-                  {props.state.label}
-               </label>
-            </VisuallyHidden>
-         ) : props.labelKind === "normal" ? (
-            <label className="ml-1 text-white/80" htmlFor={props.name}>
-               {props.state.label}
-            </label>
-         ) : null}
-         <div
-            className={cn(
-               "flex gap-1 rounded-md border-none bg-black/50 p-2 transition-colors",
-               {
-                  "outline outline-2 outline-offset-2 outline-blue-400 ":
-                     isFocusVisible,
-                  "outline-none": !isFocusVisible,
-                  "outline outline-2 outline-offset-2 outline-red-400":
-                     props.state.errors?.length,
-               }
-            )}
-            {...(focusProps as any)}
-         >
-            {!!props.preInput && (
-               <div
-                  className="flex !aspect-square shrink-0 grow items-center justify-center text-white/60"
-                  tabIndex={-1}
-               >
-                  {props.preInput}
-               </div>
-            )}
-            <input
-               defaultValue={props.state.value}
-               className={cn("w-full bg-transparent text-white outline-none")}
-               name={props.name}
-               type={props.state.type}
-               onChange={action(({ target }) => {
-                  props.state.value = target.value;
-               })}
-               placeholder={
-                  !!props.placeholder
-                     ? props.placeholder
-                     : props.labelKind === "placeholder"
-                     ? props.name
-                     : undefined
-               }
-            />
-         </div>
-         <div>
-            {props.state.errors?.map((error) => {
-               return (
-                  <div key={error} className="p-2 text-sm text-red-500">
-                     {error}
-                  </div>
-               );
-            })}
-         </div>
-      </div>
-   );
-});
+import Link from "next/link";
+import { Input } from "../input/input";
+import { AuthEvents } from "../..";
 
 const PageOne = observer(
    (props: { setNextPage: Dispatch<SetStateAction<number>> }) => {
@@ -360,6 +280,16 @@ const PageFour = observer(() => {
 });
 
 export const CreateAccountDialog = observer(() => {
+   const linkRef = useRef<HTMLSpanElement>(null);
+   const { buttonProps } = useButton(
+      {
+         onPress() {
+            window.dispatchEvent(AuthEvents.OPEN_SIGNIN_DIALOG_EVENT);
+         },
+      },
+      linkRef
+   );
+
    const [currentPage, setCurrentPage] = useState(0);
    const pages = [
       <PageOne setNextPage={setCurrentPage} />,
@@ -369,30 +299,45 @@ export const CreateAccountDialog = observer(() => {
    ];
 
    return (
-      <div className="flex max-h-[75vh] w-[400px] max-w-full flex-col bg-zinc-900 p-2 text-black">
-         <div className="flex h-16 w-full shrink-0 items-center justify-center">
-            <Dialog.Title className="text-xl font-bold text-white">
-               Create Account
-            </Dialog.Title>
+      <Provider>
+         <div className="flex max-h-[75vh] w-[400px] max-w-full flex-col bg-zinc-900 p-4 text-black">
+            <div className="flex h-16 w-full shrink-0 items-center justify-center">
+               <Dialog.Title className="text-xl font-bold text-white">
+                  Create Account
+               </Dialog.Title>
+            </div>
+            <motion.div className="mb-6 shrink-0 px-6">
+               <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                     key={currentPage}
+                     className="items-s flex h-full flex-col justify-between"
+                     initial={{ opacity: 0 }}
+                     animate={{ opacity: 1 }}
+                     exit={{ opacity: 0 }}
+                     transition={{
+                        bounce: false,
+                        ease: "easeOut",
+                        duration: 0.2,
+                     }}
+                  >
+                     {pages[currentPage]}
+                  </motion.div>
+               </AnimatePresence>
+            </motion.div>
+
+            <div className="flex w-full justify-center text-sm text-white/80">
+               <span>
+                  Already have an account? Sign in{" "}
+                  <span
+                     ref={linkRef}
+                     className="font-bold italic text-blue-600 hover:cursor-pointer"
+                     {...buttonProps}
+                  >
+                     here
+                  </span>
+               </span>
+            </div>
          </div>
-         <motion.div className="mb-6 shrink-0 px-6">
-            <AnimatePresence mode="wait" initial={false}>
-               <motion.div
-                  key={currentPage}
-                  className="items-s flex h-full flex-col justify-between"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{
-                     bounce: false,
-                     ease: "easeOut",
-                     duration: 0.2,
-                  }}
-               >
-                  {pages[currentPage]}
-               </motion.div>
-            </AnimatePresence>
-         </motion.div>
-      </div>
+      </Provider>
    );
 });
