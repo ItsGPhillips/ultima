@@ -10,7 +10,8 @@ import {
 } from "react";
 import { ZodSchema, z } from "zod";
 
-import { debounce } from "@website/utils";
+import { debounceAsync } from "@website/utils";
+import { api } from "@website/api/client";
 
 export const useCreateAccountState = () => {
    const ctx = useContext(CREATE_ACCOUNT_STATE_CONTEXT);
@@ -29,7 +30,7 @@ const prepareState = <T,>(options: {
    let _value = observable.box<T>();
    let _errors = observable.array<string>();
 
-   const validate = debounce(
+   const validate = debounceAsync(
       action(() => {
          const result = options.schema.safeParse(_value.get());
          console.log("called validate");
@@ -38,6 +39,7 @@ const prepareState = <T,>(options: {
          } else {
             _errors.replace([]);
          }
+         return result.success;
       }),
       options.debounceRate
    );
@@ -61,26 +63,26 @@ const prepareState = <T,>(options: {
 
 export type FieldState<Data = string> = {
    value?: Data;
-   validate: () => void;
+   validate: () => Promise<boolean>;
    label: string;
    type: HTMLInputTypeAttribute;
    readonly errors?: string[];
 };
 
-// type StageFieldStates = Record<number, Record<string, FieldState>>;
 type FieldStates = {
    handle: FieldState;
    email: FieldState;
-   imageFile: FieldState<File>;
+   profileImage: FieldState<File>;
    firstName: FieldState;
    lastName: FieldState;
    password: FieldState;
-   repeatPassword: FieldState;
+   repeatPassword?: FieldState;
 };
 
 const CREATE_ACCOUNT_STATE_CONTEXT = createContext<{
    currentStage: IObservableValue<number>;
    fields: FieldStates;
+   submit: () => Promise<void>;
 } | null>(null);
 
 const SPECIAL_CHAR_AND_SPACES_REGEX = /^(\d|\w)+$/;
@@ -119,7 +121,7 @@ export const Provider = (props: PropsWithChildren) => {
             label: "Email",
             type: "email",
          }),
-         imageFile: prepareState({
+         profileImage: prepareState({
             schema: FILE_SCHEMA,
             label: "Immoooge",
             type: "text",
@@ -139,16 +141,43 @@ export const Provider = (props: PropsWithChildren) => {
             label: "Password",
             type: "password",
          }),
-         repeatPassword: prepareState({
-            schema: TEXT_SCHEMA,
-            label: "Repeat Password",
-            type: "password",
-         }),
       })
    );
 
+   fields.repeatPassword = prepareState({
+      schema: z.string().refine(
+         (value) => {
+            return fields.password.value === value;
+         },
+         { message: "Passwords don't match" }
+      ),
+      label: "Repeat Password",
+      type: "password",
+   });
+
+   const submit = async () => {
+      const results = await Promise.all(
+         Object.values(fields).map(({ validate }) => validate())
+      );
+      if (results.includes(false)) {
+         // TODO: toasts.
+         throw new Error("Fields didn't pass validation");
+      }
+
+      await api.auth.create.mutate({
+         id: "email",
+         email: fields.email.value!,
+         handle: fields.handle.value!,
+         firstName: fields.firstName.value!,
+         lastName: fields.lastName.value ?? null,
+         password: fields.password.value!,
+      });
+   };
+
    return (
-      <CREATE_ACCOUNT_STATE_CONTEXT.Provider value={{ currentStage, fields }}>
+      <CREATE_ACCOUNT_STATE_CONTEXT.Provider
+         value={{ currentStage, fields, submit }}
+      >
          {props.children}
       </CREATE_ACCOUNT_STATE_CONTEXT.Provider>
    );

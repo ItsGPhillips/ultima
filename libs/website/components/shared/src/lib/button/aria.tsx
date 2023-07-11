@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { mergeRefs } from "@react-aria/utils";
 import { forwardRef, useRef, useEffect } from "react";
@@ -42,7 +42,7 @@ export const AriaButton = forwardRef<HTMLButtonElement, AriaButtonProps>(
             ref={mergeRefs(ref, fref)}
             {...mergeProps(focusProps, buttonProps, hoverProps)}
             className={cn(
-               "text-md flex items-center justify-center rounded-full p-2 py-1 font-bold tracking-wide antialiased",
+               "text-md flex select-none items-center justify-center whitespace-nowrap rounded-full p-2 py-1 font-bold tracking-wide antialiased",
                isFocusVisible ? focusedClass : notFocusedClass,
                props.className
             )}

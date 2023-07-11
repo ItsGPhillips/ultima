@@ -101,14 +101,14 @@ const HeaderImpl = async () => {
    return (
       <header
          className={cn(
-            "relative flex h-full w-full border-b-[1px] justify-between border-white/10 px-12",
+            "relative flex h-full w-full border-b-[1px] justify-between border-white/10 px-1 tmd:px-12",
             RemoveScroll.classNames.fullWidth
          )}
       >
          <div className="relative w-36 h-full">
             <Logo />
          </div>
-         <div className="flex items-end justify-center flex-1 p-1">
+         <div className="hidden tmd:flex items-end justify-center flex-1 p-1">
             <div className="bg-white/10 rounded-xl h-full w-[30rem]"></div>
          </div>
          <div className="flex items-center">

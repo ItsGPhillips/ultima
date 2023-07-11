@@ -11,6 +11,7 @@ export const authRouter = router({
    create: publicProcedure
       .input(CREATE_ACCOUNT_SCHEMA)
       .mutation(async ({ input }) => {
+         // TODO email validation link
          await createUserImpl(input);
       }),
 

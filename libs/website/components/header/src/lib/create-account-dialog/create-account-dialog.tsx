@@ -8,11 +8,17 @@ import { VisuallyHidden, useFocusRing } from "react-aria";
 import { cn } from "@website/utils";
 import { MdAlternateEmail } from "react-icons/md";
 import { HiOutlineMail } from "react-icons/hi";
-import { AnimatePresence, motion } from "framer-motion";
-import { Dispatch, SetStateAction, useState } from "react";
+import {
+   AnimatePresence,
+   motion,
+   useAnimate,
+   useMotionValue,
+} from "framer-motion";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaFacebookSquare, FaGoogle, FaTwitter } from "react-icons/fa";
 import { BiSolidLockAlt, BiSolidLockOpenAlt } from "react-icons/bi";
+import { BsCheckLg } from "react-icons/bs";
 import Image from "next/image";
 
 type InputProps = {
@@ -67,6 +73,7 @@ const Input = observer((props: InputProps) => {
                </div>
             )}
             <input
+               defaultValue={props.state.value}
                className={cn("w-full bg-transparent text-white outline-none")}
                name={props.name}
                type={props.state.type}
@@ -82,7 +89,7 @@ const Input = observer((props: InputProps) => {
                }
             />
          </div>
-         <motion.div layout="position">
+         <div>
             {props.state.errors?.map((error) => {
                return (
                   <div key={error} className="p-2 text-sm text-red-500">
@@ -90,7 +97,7 @@ const Input = observer((props: InputProps) => {
                   </div>
                );
             })}
-         </motion.div>
+         </div>
       </div>
    );
 });
@@ -98,6 +105,8 @@ const Input = observer((props: InputProps) => {
 const PageOne = observer(
    (props: { setNextPage: Dispatch<SetStateAction<number>> }) => {
       const state = useCreateAccountState();
+      const [aref, animate] = useAnimate();
+
       return (
          <>
             <div className="relative flex select-none items-center justify-center gap-2 text-white/10">
@@ -128,28 +137,36 @@ const PageOne = observer(
                   preInput={<HiOutlineMail className="mr-1 h-5 w-5" />}
                />
             </div>
+            <div className="ml-auto mt-2 flex gap-2">
+               <AriaButton
+                  ref={aref}
+                  onPress={async () => {
+                     const results = await Promise.all([
+                        state.fields.handle.validate(),
+                        state.fields.email.validate(),
+                     ]);
 
-            <AriaButton
-               onPress={() => {
-                  state.fields.handle.validate();
-                  state.fields.email.validate();
+                     if (results.includes(false)) {
+                        animate(
+                           aref.current,
+                           {
+                              x: [-4, 4, -4, 0],
+                           },
+                           {
+                              ease: "easeInOut",
+                              duration: 0.2,
+                           }
+                        );
+                        return;
+                     }
 
-                  console.log(state.fields.handle.errors);
-                  console.log(state.fields.email.errors);
-
-                  if (state.fields.handle.errors?.length ?? 0 !== 0) {
-                     return;
-                  }
-                  if (state.fields.email.errors?.length ?? 0 !== 0) {
-                     return;
-                  }
-
-                  props.setNextPage((current) => current + 1);
-               }}
-               className="mx-2 ml-auto mt-auto w-24 border-2 border-blue-400 bg-blue-400/30 text-white"
-            >
-               Next
-            </AriaButton>
+                     props.setNextPage((current) => current + 1);
+                  }}
+                  className="mx-2 ml-auto mt-auto w-24 border-2 border-blue-400 bg-blue-400/30 text-white"
+               >
+                  Next
+               </AriaButton>
+            </div>
          </>
       );
    }
@@ -158,7 +175,7 @@ const PageOne = observer(
 const PageTwo = observer(
    (props: { setNextPage: Dispatch<SetStateAction<number>> }) => {
       const state = useCreateAccountState();
-
+      const [aref, animate] = useAnimate();
       const [imageUrl, setImageUrl] = useState<string>();
 
       const dz = useDropzone({
@@ -176,7 +193,7 @@ const PageTwo = observer(
                }
             });
             reader.readAsDataURL(acceptedFiles[0]);
-            state.fields.imageFile.value = acceptedFiles[0] as File;
+            state.fields.profileImage.value = acceptedFiles[0] as File;
          },
       });
 
@@ -211,7 +228,7 @@ const PageTwo = observer(
                   labelKind="normal"
                />
             </div>
-            <div className="ml-auto flex gap-2">
+            <div className="ml-auto mt-2 flex gap-2">
                <AriaButton
                   onPress={() => {
                      props.setNextPage((current) => current - 1);
@@ -221,17 +238,24 @@ const PageTwo = observer(
                   Back
                </AriaButton>
                <AriaButton
-                  onPress={() => {
-                     state.fields.firstName.validate();
-                     state.fields.lastName.validate();
+                  ref={aref}
+                  onPress={async () => {
+                     const results = await Promise.all([
+                        state.fields.firstName.validate(),
+                        state.fields.lastName.validate(),
+                     ]);
 
-                     console.log(state.fields.firstName.errors);
-                     console.log(state.fields.lastName.errors);
-
-                     if (state.fields.firstName.errors?.length ?? 0 !== 0) {
-                        return;
-                     }
-                     if (state.fields.lastName.errors?.length ?? 0 !== 0) {
+                     if (results.includes(false)) {
+                        animate(
+                           aref.current,
+                           {
+                              x: [-4, 4, -4, 0],
+                           },
+                           {
+                              ease: "easeInOut",
+                              duration: 0.2,
+                           }
+                        );
                         return;
                      }
 
@@ -250,6 +274,7 @@ const PageTwo = observer(
 const PageThree = observer(
    (props: { setNextPage: Dispatch<SetStateAction<number>> }) => {
       const state = useCreateAccountState();
+      const [aref, animate] = useAnimate();
 
       return (
          <>
@@ -260,12 +285,14 @@ const PageThree = observer(
                   labelKind="normal"
                   preInput={<BiSolidLockOpenAlt className="h-5 w-5" />}
                />
-               <Input
-                  name="Repeat Password"
-                  state={state.fields.repeatPassword}
-                  labelKind="placeholder"
-                  preInput={<BiSolidLockAlt className="mr-1 h-5 w-5" />}
-               />
+               {!!state.fields.repeatPassword && (
+                  <Input
+                     name="Repeat Password"
+                     state={state.fields.repeatPassword}
+                     labelKind="placeholder"
+                     preInput={<BiSolidLockAlt className="mr-1 h-5 w-5" />}
+                  />
+               )}
             </div>
             <div className="ml-auto flex gap-2">
                <AriaButton
@@ -277,24 +304,29 @@ const PageThree = observer(
                   Back
                </AriaButton>
                <AriaButton
-                  onPress={() => {
-                     state.fields.password.validate();
-                     state.fields.repeatPassword.validate();
-
-                     console.log(state.fields.password.errors);
-                     console.log(state.fields.repeatPassword.errors);
-
-                     if (state.fields.password.errors?.length ?? 0 !== 0) {
+                  ref={aref}
+                  onPress={async () => {
+                     const results = await Promise.all([
+                        state.fields.password.validate(),
+                        state.fields.repeatPassword?.validate() ?? false,
+                     ]);
+                     if (results.includes(false)) {
+                        animate(
+                           aref.current,
+                           {
+                              x: [-4, 4, -4, 0],
+                           },
+                           {
+                              ease: "easeInOut",
+                              duration: 0.2,
+                           }
+                        );
                         return;
                      }
-                     if (
-                        state.fields.repeatPassword.errors?.length ??
-                        0 !== 0
-                     ) {
-                        return;
-                     }
 
-                     props.setNextPage((current) => current + 1);
+                     await state.submit().then(() => {
+                        props.setNextPage((current) => current + 1);
+                     });
                   }}
                   className="mx-2 whitespace-nowrap border-2 border-green-400 bg-green-400/30 px-4 text-white"
                >
@@ -306,26 +338,44 @@ const PageThree = observer(
    }
 );
 
+const PageFour = observer(() => {
+   const [aref, animate] = useAnimate();
+   const pathLength = useMotionValue(0);
+
+   useEffect(() => {
+      pathLength.set(1);
+   }, []);
+
+   return (
+      <div ref={aref} className="flex h-48 w-full items-center justify-center">
+         <motion.div
+            initial={{ opacity: 0, pathLength: 0 }}
+            animate={{ opacity: 1, pathLength: 1, transition: { delay: 0.4 } }}
+            className="flex h-36 w-36 items-center justify-center rounded-full border-2 border-green-400 bg-green-400/20 p-8"
+         >
+            <BsCheckLg className="h-full w-full" fill="white" />
+         </motion.div>
+      </div>
+   );
+});
+
 export const CreateAccountDialog = observer(() => {
    const [currentPage, setCurrentPage] = useState(0);
    const pages = [
       <PageOne setNextPage={setCurrentPage} />,
       <PageTwo setNextPage={setCurrentPage} />,
       <PageThree setNextPage={setCurrentPage} />,
+      <PageFour />,
    ];
 
    return (
-      <motion.div
-         layout
-         layoutRoot
-         className="flex max-h-[75vh] w-[400px] flex-col bg-zinc-900 p-2 text-black max-w-full"
-      >
-         <div className="flex h-16 w-full items-center justify-center shrink-0">
+      <div className="flex max-h-[75vh] w-[400px] max-w-full flex-col bg-zinc-900 p-2 text-black">
+         <div className="flex h-16 w-full shrink-0 items-center justify-center">
             <Dialog.Title className="text-xl font-bold text-white">
                Create Account
             </Dialog.Title>
          </div>
-         <motion.div layout className="mb-6 px-6 shrink-0">
+         <motion.div className="mb-6 shrink-0 px-6">
             <AnimatePresence mode="wait" initial={false}>
                <motion.div
                   key={currentPage}
@@ -343,6 +393,6 @@ export const CreateAccountDialog = observer(() => {
                </motion.div>
             </AnimatePresence>
          </motion.div>
-      </motion.div>
+      </div>
    );
 });
