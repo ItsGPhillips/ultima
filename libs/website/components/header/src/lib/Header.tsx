@@ -8,6 +8,7 @@ import { db } from "@website/database";
 import { RemoveScroll } from "react-remove-scroll";
 import { UserAvatar } from "./UserAvatar";
 import { CreateAccountButton } from "./create-account-button";
+import { Logo } from "./logo/logo";
 
 export const HeaderOld = async () => {
    const user = await currentUser();
@@ -35,16 +36,16 @@ export const HeaderOld = async () => {
       content = (
          <header
             className={cn(
-               "relative mx-4 flex h-full w-[inherit]",
+               "relative mx-8 flex h-full w-[inherit]",
                RemoveScroll.classNames.zeroRight
             )}
          >
             <div className="flex w-60 items-center justify-center border-2">
-               LOGO
+               <Logo />
             </div>
-            {/* <div className="absolute flex items-center justify-stretch h-full left-1/2 -translate-x-1/2 w-[var(--feed-width)]">
-               <input type="text" className="w-full p-2 rounded text-black my-2"/>
-            </div> */}
+            <div className="border-2 flex-1 h-full">
+               TEST
+            </div>
             <div
                className="ml-auto flex h-full items-center gap-4"
                suppressHydrationWarning
@@ -100,11 +101,17 @@ const HeaderImpl = async () => {
    return (
       <header
          className={cn(
-            "relative flex h-full w-full",
+            "relative flex h-full w-full border-b-[1px] justify-between border-white/10 px-12",
             RemoveScroll.classNames.fullWidth
          )}
       >
-         <div className="ml-auto mr-4 flex items-center">
+         <div className="relative w-36 h-full">
+            <Logo />
+         </div>
+         <div className="flex items-end justify-center flex-1 p-1">
+            <div className="bg-white/10 rounded-xl h-full w-[30rem]"></div>
+         </div>
+         <div className="flex items-center">
             {!!profile && (
                <UserAvatar profile={profile} handle={profile.page.handle} />
             )}

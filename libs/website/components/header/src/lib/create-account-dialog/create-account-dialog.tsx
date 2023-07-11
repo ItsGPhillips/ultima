@@ -318,14 +318,14 @@ export const CreateAccountDialog = observer(() => {
       <motion.div
          layout
          layoutRoot
-         className="flex max-h-[75vh] w-[400px] flex-col bg-zinc-900 p-2 text-black"
+         className="flex max-h-[75vh] w-[400px] flex-col bg-zinc-900 p-2 text-black max-w-full"
       >
-         <div className="flex h-16 w-full items-center justify-center">
+         <div className="flex h-16 w-full items-center justify-center shrink-0">
             <Dialog.Title className="text-xl font-bold text-white">
                Create Account
             </Dialog.Title>
          </div>
-         <motion.div layout className="mb-6 px-6">
+         <motion.div layout className="mb-6 px-6 shrink-0">
             <AnimatePresence mode="wait" initial={false}>
                <motion.div
                   key={currentPage}
