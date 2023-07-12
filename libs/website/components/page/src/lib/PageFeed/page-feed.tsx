@@ -7,7 +7,10 @@ import {
    useIsomorphicLayoutEffect,
 } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useFeedPostsQuery, usePostsInfinateQuery } from "@website/hooks";
+import {
+   UsePostsInfinateQueryOptions,
+   usePostsInfinateQuery,
+} from "@website/hooks";
 import { Post } from "@website/components/post";
 import { Spinner } from "@website/components/shared";
 import { Player } from "@lottiefiles/react-lottie-player";
@@ -16,21 +19,27 @@ import { PostLoader } from "./loader";
 
 export const revalidate = 0;
 
-export type PageFeedProps = {
-   handle: string;
-};
+export type PageFeedProps =
+   | { homeFeed: true }
+   | { homeFeed?: false; handle: string };
 
 export const PageFeed = (props: PageFeedProps) => {
+   const queryArgs: UsePostsInfinateQueryOptions = props.homeFeed
+      ? {
+           homeFeed: props.homeFeed,
+           handle: undefined,
+           filter: "NEWEST",
+           limit: 5,
+        }
+      : {
+           homeFeed: props.homeFeed,
+           handle: props.handle,
+           filter: "NEWEST",
+           limit: 5,
+        };
+
    const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
-      useFeedPostsQuery({
-         filter: "NEWEST",
-      });
-      
-   // const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
-   //    usePostsInfinateQuery({
-   //       handle: props.handle,
-   //       sortBy: "NEWEST",
-   //    });
+      usePostsInfinateQuery(queryArgs);
 
    const posts = data?.pages.flat();
 
@@ -56,7 +65,7 @@ export const PageFeed = (props: PageFeedProps) => {
          <AnimatePresence mode="popLayout">
             <motion.div
                layoutRoot
-               className="flex flex-col items-stretch gap-2 h-full"
+               className="flex h-full flex-col items-stretch gap-2"
             >
                {showSpinner && (
                   <motion.div

@@ -1,6 +1,6 @@
 import "./global.scss";
 
-import { Header } from "@website/components/header";
+import { Header, ProgressBar } from "@website/components/header";
 import { Roboto } from "next/font/google";
 import { cn } from "@website/utils";
 import {
@@ -10,6 +10,7 @@ import {
 import { Tooltip } from "@website/components/shared";
 import { headers } from "next/headers";
 import { AuthDialogContainer } from "@website/components/auth";
+import colors from "tailwindcss/colors";
 
 const font = Roboto({ weight: ["300", "400", "700"], subsets: ["latin"] });
 
@@ -36,6 +37,12 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
                <ReactQueryProvider>
                   <Tooltip.Provider delayDuration={80}>
                      <AuthDialogContainer>
+                        <ProgressBar
+                           color={colors.blue["400"]}
+                           height="2px"
+                           options={{ trickle: true, showSpinner: false }}
+                           shallowRouting
+                        />
                         <Header />
                         <div className="z-[500] mt-[var(--header-height)] w-full">
                            {children}

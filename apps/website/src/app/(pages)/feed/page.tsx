@@ -8,7 +8,7 @@ const Page = async (ctx: any) => {
    return (
       <>
          {ua.device.type === "mobile" && <HeaderScrollHandle />}
-         <PageFeed handle={ctx.params.slug} />
+         <PageFeed homeFeed />
       </>
    );
 };
