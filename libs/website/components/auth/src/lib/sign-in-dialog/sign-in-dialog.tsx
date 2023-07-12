@@ -12,6 +12,7 @@ import { api } from "@website/api/client";
 import { useRouter } from "next/navigation";
 import { observer } from "mobx-react-lite";
 import { useDialogState } from "libs/website/components/shared/src/lib/dialog/Provider";
+import { BiSolidLockAlt } from "react-icons/bi";
 
 export const SignInDialog = observer(() => {
    const linkRef = useRef<HTMLSpanElement>(null);
@@ -33,7 +34,7 @@ export const SignInDialog = observer(() => {
                type: "email",
             }),
             password: prepareState<string>({
-               label: "Email",
+               label: "Password",
                schema: z.string().nonempty(),
                type: "password",
             }),
@@ -64,6 +65,7 @@ export const SignInDialog = observer(() => {
                   labelKind="normal"
                   name="Password"
                   state={state.password}
+                  preInput={<BiSolidLockAlt className="mr-1 h-5 w-5" />}
                />
             </div>
             <div className="my-2 flex justify-center">

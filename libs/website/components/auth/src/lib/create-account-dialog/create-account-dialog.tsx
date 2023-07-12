@@ -18,7 +18,6 @@ import { FaFacebookSquare, FaGoogle, FaTwitter } from "react-icons/fa";
 import { BiSolidLockAlt, BiSolidLockOpenAlt } from "react-icons/bi";
 import { BsCheckLg } from "react-icons/bs";
 import Image from "next/image";
-import Link from "next/link";
 import { Input } from "../input/input";
 import { AuthEvents } from "../..";
 

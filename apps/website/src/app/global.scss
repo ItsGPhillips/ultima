@@ -18,6 +18,14 @@
    }
 }
 
+/* Better password input styling */
+input[type="password"] {
+   font: small-caption;
+   font-size: 1rem;
+   vertical-align: middle;
+   line-height: auto;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
    width: theme("space.4");
