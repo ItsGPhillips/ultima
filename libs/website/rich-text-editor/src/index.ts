@@ -12,6 +12,7 @@ export const createEditor = (options: {
 }) => {
    return new Editor({
       editable: options.editable,
+      injectCSS: false,
       autofocus: options.autofocus,
       editorProps: {
          attributes: {

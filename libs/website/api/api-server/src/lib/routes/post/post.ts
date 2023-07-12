@@ -13,51 +13,41 @@ const GET_MANY_SCHEMA = z.object({
 });
 
 export const postsRouter = router({
-   getFeed: publicProcedure
-      .input(GET_MANY_SCHEMA)
-      .query(async ({ input }) => {
-         let query = db
-            .select({ postedAt: schema.post.postedAt })
-            .from(schema.post);
-         if (input.lastId) {
-            query = query.where(eq(schema.post.id, input.lastId));
-         }
-         query = query.limit(1);
-         const [data] = await query;
+   getFeed: publicProcedure.input(GET_MANY_SCHEMA).query(async ({ input }) => {
+      let query = db
+         .select({ postedAt: schema.post.postedAt })
+         .from(schema.post);
 
-         console.log(data);
+      if (input.lastId) {
+         query = query.where(eq(schema.post.id, input.lastId));
+      }
 
-         if (!data) {
-            return [];
-         }
+      const [data] = await query.limit(1);
 
-         switch (input.filter) {
-            case "NEWEST": {
-               try {
-                  const filter = !!input.lastId
-                     ? sql`${schema.post.postedAt} > ${data.postedAt}::TIMESTAMP`
-                     : sql`${schema.post.postedAt} >= ${data.postedAt}::TIMESTAMP`;
+      if (!data) {
+         return [];
+      }
 
-                  const query = db
-                     .select()
-                     .from(post)
-                     .where(filter)
-                     .orderBy(asc(schema.post.postedAt))
-                     .limit(input.limit);
+      switch (input.filter) {
+         case "NEWEST": {
+            try {
+               const filter = !!input.lastId
+                  ? sql`${schema.post.postedAt} > ${data.postedAt}::TIMESTAMP`
+                  : sql`${schema.post.postedAt} >= ${data.postedAt}::TIMESTAMP`;
 
-                  console.log(
-                     query.toSQL().sql.replace(/\\/g, ""),
-                     query.toSQL().params,
-                     input.lastId
-                  );
-                  return await query;
-               } catch (e) {
-                  console.log(e);
-                  return [];
-               }
+               return await db
+                  .select()
+                  .from(post)
+                  .where(filter)
+                  .orderBy(asc(schema.post.postedAt))
+                  .limit(input.limit);
+            } catch (e) {
+               console.log(e);
+               return [];
             }
-            default:
-               throw "unimplimented";
          }
-      }),
+         default:
+            throw "unimplimented";
+      }
+   }),
 });

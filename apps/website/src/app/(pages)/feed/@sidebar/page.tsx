@@ -3,7 +3,7 @@ import { Seperator as BaseSeperator } from "@website/components/shared";
 import { cn } from "@website/utils";
 
 const Header: React.FC<PropsWithChildren> = (props) => (
-   <h3 className="mb-2 ml-2 text-3xl font-bold text-white/90">
+   <h3 className="m-2 text-3xl font-bold text-white/90">
       {props.children}
    </h3>
 );
@@ -15,13 +15,12 @@ const Sidebar = () => {
       <div
          suppressHydrationWarning
          className={cn(
-            "float-left h-[var(--available-area-height)] border-l-[1px] border-white/10 py-2 text-white",
-            "flex w-64 flex-col justify-start"
+            "float-left h-[var(--available-area-height)] border-l-[1px] border-white/10 text-white",
+            "flex w-full max-w-[22rem] flex-col justify-start"
          )}
       >
-         <Seperator />
          <Header>Trending</Header>
-         <div className="ml-1 flex w-full flex-col gap-1">
+         <div className="flex w-full flex-col gap-1 px-1">
             {Array(5)
                .fill(0)
                .map(() => {

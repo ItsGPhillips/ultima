@@ -53,7 +53,7 @@ export const PageFeed = (props: PageFeedProps) => {
          <AnimatePresence mode="popLayout">
             <motion.div
                layoutRoot
-               className="flex flex-col items-stretch gap-2 min-h-full"
+               className="flex flex-col items-stretch gap-2 h-full"
             >
                {showSpinner && (
                   <motion.div
