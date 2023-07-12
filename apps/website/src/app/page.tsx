@@ -1,10 +1,7 @@
-"use client";
-
-import { api } from "@website/api/client";
-import { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
 
 const Page = () => {
-   return <></>;
+   redirect("/feed")
 };
 
 export default Page;

@@ -3,12 +3,16 @@ import { headers } from "next/headers";
 import { userAgent } from "next/server";
 import { PropsWithChildren } from "react";
 import { PageBanner } from "./PageBanner";
-import { LayoutContext } from "./types";
 
-export const createLayout = async (ctx: LayoutContext) => {
+export const createLayout = async (options: {
+   banner: React.ReactNode | null;
+   pageinfo: React.ReactNode;
+   sidebar: React.ReactNode;
+   children: React.ReactNode;
+}) => {
    return (
       <>
-         <PageBanner title={ctx.params.slug} />
+         {!!options.banner && <PageBanner>{options.banner}</PageBanner>}
          <div className="group relative flex flex-row items-stretch justify-center">
             <div
                className={cn(
@@ -16,16 +20,16 @@ export const createLayout = async (ctx: LayoutContext) => {
                   "top-[var(--header-height)] h-full flex-1 "
                )}
             >
-               {ctx.pageinfo}
+               {options.pageinfo}
             </div>
-            <FeedContainer>{ctx.children}</FeedContainer>
+            <FeedContainer>{options.children}</FeedContainer>
             <div
                className={cn(
                   "txl:block sticky hidden overflow-hidden",
-                  "top-[var(--header-height)] h-full shrink flex-1"
+                  "top-[var(--header-height)] h-full flex-1 shrink"
                )}
             >
-               {ctx.sidebar}
+               {options.sidebar}
             </div>
          </div>
       </>
@@ -34,7 +38,7 @@ export const createLayout = async (ctx: LayoutContext) => {
 
 const FeedContainer = (props: PropsWithChildren) => {
    const ua = userAgent({ headers: headers() });
-   const tabletClasses = "flex flex-col tmd:basis-2/3"; 
+   const tabletClasses = "flex flex-col tmd:basis-2/3";
 
    return (
       <div
