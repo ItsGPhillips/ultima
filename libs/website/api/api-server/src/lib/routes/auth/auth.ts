@@ -6,6 +6,7 @@ import { SIGN_IN_SCHEMA, checkSession, getKey } from "./signin.utils";
 import { CREATE_ACCOUNT_SCHEMA, createUserImpl } from "./create.utils";
 import { Log } from "@website/utils";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 export const authRouter = router({
    create: publicProcedure
@@ -18,21 +19,32 @@ export const authRouter = router({
    signIn: publicProcedure
       .input(SIGN_IN_SCHEMA)
       .mutation(async ({ input, ctx }) => {
-         // --- Ensure there isn't already and active session.
-         const checkSessionResult = await checkSession(ctx.authRequest);
-         if (!checkSessionResult.success) {
-            throw checkSessionResult.error;
+         try {
+            // --- Ensure there isn't already and active session.
+            const checkSessionResult = await checkSession(ctx.authRequest);
+            if (!checkSessionResult.success) {
+               throw checkSessionResult.error;
+            }
+            // --- Get the auth.key associated with the provided credentials
+            const getKeyResult = await getKey(input);
+            if (!getKeyResult.success) {
+               throw getKeyResult.error;
+            }
+            // --- Create a session for the user associated with the key.
+            const key = getKeyResult.key;
+            const session = await auth.createSession(key.userId);
+            // --- Write the session into the cookies.
+            ctx.authRequest.setSession(session);
+         } catch (e: any) {
+            let message = "";
+            if ("help" in e) {
+               message = e.help as string;
+            }
+            throw new TRPCError({
+               code: "UNAUTHORIZED",
+               message,
+            });
          }
-         // --- Get the auth.key associated with the provided credentials
-         const getKeyResult = await getKey(input);
-         if (!getKeyResult.success) {
-            throw getKeyResult.error;
-         }
-         // --- Create a session for the user associated with the key.
-         const key = getKeyResult.key;
-         const session = await auth.createSession(key.userId);
-         // --- Write the session into the cookies.
-         ctx.authRequest.setSession(session);
       }),
 
    signOut: publicProcedure.use(authenicated).mutation(async ({ ctx }) => {

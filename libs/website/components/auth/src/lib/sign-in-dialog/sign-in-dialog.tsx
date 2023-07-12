@@ -1,14 +1,17 @@
 "use client";
 
 import { useButton } from "@react-aria/button";
-import { Dialog } from "@website/components/shared";
-import { AnimatePresence, motion } from "framer-motion";
-import { observer } from "mobx-react-lite";
-import { useRef, useState } from "react";
+import { AriaButton, Dialog, Spinner } from "@website/components/shared";
+import { useRef, useState, useTransition } from "react";
 import { AuthEvents } from "../..";
 import { prepareState } from "../input/state";
 import { z } from "zod";
 import { Input } from "../input/input";
+import { MdAlternateEmail } from "react-icons/md";
+import { api } from "@website/api/client";
+import { useRouter } from "next/navigation";
+import { observer } from "mobx-react-lite";
+import { useDialogState } from "libs/website/components/shared/src/lib/dialog/Provider";
 
 export const SignInDialog = observer(() => {
    const linkRef = useRef<HTMLSpanElement>(null);
@@ -24,18 +27,23 @@ export const SignInDialog = observer(() => {
    const [state] = useState(
       () =>
          ({
-            email: prepareState({
+            email: prepareState<string>({
                label: "Email",
                schema: z.string().email(),
                type: "email",
             }),
-            password: prepareState({
+            password: prepareState<string>({
                label: "Email",
                schema: z.string().nonempty(),
                type: "password",
             }),
          } as const)
    );
+
+   const [pending, transition] = useTransition();
+   const [errorMessage, setErrorMessage] = useState<string>();
+   const router = useRouter();
+   const dialogState = useDialogState();
 
    return (
       <div className="flex max-h-[75vh] w-[400px] max-w-full flex-col bg-zinc-900 p-4 text-black">
@@ -44,24 +52,62 @@ export const SignInDialog = observer(() => {
                Sign In
             </Dialog.Title>
          </div>
-         <motion.div className="mb-6 shrink-0 px-6">
-            <AnimatePresence mode="wait" initial={false}>
-               <motion.div
-                  className="items-s flex h-full flex-col justify-between"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{
-                     bounce: false,
-                     ease: "easeOut",
-                     duration: 0.2,
+         <div className="mb-6 shrink-0 px-6">
+            <div className="items-s flex h-full flex-col justify-between">
+               <Input
+                  labelKind="normal"
+                  name="Email"
+                  state={state.email}
+                  preInput={<MdAlternateEmail className="h-5 w-5" />}
+               />
+               <Input
+                  labelKind="normal"
+                  name="Password"
+                  state={state.password}
+               />
+            </div>
+            <div className="my-2 flex justify-center">
+               <AriaButton
+                  className="h-10 w-24 border-2 border-green-400 bg-green-400/30 px-2 text-white/80"
+                  onPress={() => {
+                     transition(async () => {
+                        const results = await Promise.all([
+                           state.email.validate(),
+                           state.password.validate(),
+                        ]);
+
+                        if (results.includes(false)) {
+                           return;
+                        }
+
+                        try {
+                           await api.auth.signIn.mutate({
+                              id: "email",
+                              email: state.email.value!,
+                              password: state.password.value!,
+                           });
+                           setErrorMessage(undefined);
+                           dialogState.isOpen = false;
+                           router.refresh();
+                        } catch {
+                           setErrorMessage("Incorrect email or password");
+                        }
+                     });
                   }}
                >
-                  <Input labelKind="normal" name="Email" state={state.email} />
-                  <Input labelKind="normal" name="Password" state={state.password} />
-               </motion.div>
-            </AnimatePresence>
-         </motion.div>
+                  {pending ? (
+                     <span className="h-5 w-5">
+                        <Spinner />
+                     </span>
+                  ) : (
+                     "Sign In"
+                  )}
+               </AriaButton>
+            </div>
+            <div className="flex justify-center">
+               <span className="text-red-400">{errorMessage}</span>
+            </div>
+         </div>
 
          <div className="flex w-full justify-center text-sm text-white/80">
             <span>
