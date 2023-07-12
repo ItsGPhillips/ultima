@@ -14,6 +14,8 @@ import { Player } from "@lottiefiles/react-lottie-player";
 import useMeasure from "react-use-measure";
 import { PostLoader } from "./loader";
 
+export const revalidate = 0;
+
 export type PageFeedProps = {
    handle: string;
 };
@@ -23,6 +25,7 @@ export const PageFeed = (props: PageFeedProps) => {
       useFeedPostsQuery({
          filter: "NEWEST",
       });
+      
    // const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
    //    usePostsInfinateQuery({
    //       handle: props.handle,
