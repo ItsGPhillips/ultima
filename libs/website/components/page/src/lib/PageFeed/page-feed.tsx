@@ -6,76 +6,34 @@ import {
    useInView,
    useIsomorphicLayoutEffect,
 } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-import { usePostsInfinateQuery } from "@website/hooks";
+import { useEffect, useState } from "react";
+import { useFeedPostsQuery, usePostsInfinateQuery } from "@website/hooks";
 import { Post } from "@website/components/post";
 import { Spinner } from "@website/components/shared";
 import { Player } from "@lottiefiles/react-lottie-player";
 import useMeasure from "react-use-measure";
+import { PostLoader } from "./loader";
 
 export type PageFeedProps = {
    handle: string;
 };
 
-const PostLoader = (props: { hasNextPage: boolean; onInView: () => void }) => {
-   const ref = useRef<HTMLDivElement>(null);
-   const isInView = useInView(ref);
-   useEffect(() => {
-      if (isInView) {
-         props.onInView();
-      }
-   }, [isInView]);
-
-   return (
-      <div
-         ref={ref}
-         className="flex h-20  w-full flex-col items-center justify-center gap-2"
-      >
-         <AnimatePresence mode="popLayout">
-            {!!(isInView && props.hasNextPage) && (
-               <motion.div
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="flex flex-col items-center justify-center gap-2"
-               >
-                  <div className="h-6 w-6">
-                     <Spinner />
-                  </div>
-                  <div className="select-none whitespace-nowrap text-sm text-white/75">
-                     Loading more posts...
-                  </div>
-               </motion.div>
-            )}
-
-            {!props.hasNextPage && (
-               <motion.div
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="select-none whitespace-nowrap text-sm text-white/75"
-               >
-                  No more posts
-               </motion.div>
-            )}
-         </AnimatePresence>
-      </div>
-   );
-};
-
 export const PageFeed = (props: PageFeedProps) => {
    const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
-      usePostsInfinateQuery({
-         handle: props.handle,
-         sortBy: "NEWEST",
+      useFeedPostsQuery({
+         filter: "NEWEST",
       });
+   // const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
+   //    usePostsInfinateQuery({
+   //       handle: props.handle,
+   //       sortBy: "NEWEST",
+   //    });
 
    const posts = data?.pages.flat();
 
    const [mref, bounds] = useMeasure();
    useIsomorphicLayoutEffect(() => {
       document.body.style.setProperty("--feed-width", `${bounds.width}px`);
-      console.log(bounds.width);
    }, [bounds.width]);
 
    const [showSpinner, setShowSpinner] = useState(false);
@@ -95,7 +53,7 @@ export const PageFeed = (props: PageFeedProps) => {
          <AnimatePresence mode="popLayout">
             <motion.div
                layoutRoot
-               className="flex flex-col items-stretch gap-2"
+               className="flex flex-col items-stretch gap-2 min-h-full"
             >
                {showSpinner && (
                   <motion.div
