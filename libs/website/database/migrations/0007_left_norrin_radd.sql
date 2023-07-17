@@ -1,0 +1,1 @@
+ALTER TABLE "post" ADD COLUMN "votes" integer DEFAULT 0;

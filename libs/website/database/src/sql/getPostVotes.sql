@@ -13,6 +13,9 @@ BEGIN
 
 	SELECT COUNT(is_upvote) INTO "upvotes" FROM "tmp_vote" WHERE "tmp_vote"."is_upvote" = TRUE;
 	SELECT COUNT(is_upvote) INTO "downvotes" FROM "tmp_vote" WHERE "tmp_vote"."is_upvote" = FALSE;
+
+	DROP TEMP TABLE "tmp_vote"; 
+
 	RETURN (upvotes - downvotes);
 END
 $$ LANGUAGE PLPGSQL SECURITY DEFINER;

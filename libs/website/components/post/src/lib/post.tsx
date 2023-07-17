@@ -85,7 +85,10 @@ export const Post = (props: PropsWithChildren<PostType>) => {
          className="isolate z-[400] flex rounded-md outline-[1px] outline-white/50 hover:outline"
          style={{ overflowAnchor: "none" }}
       >
-         <VoteButtonGroup className="mt-2 hidden flex-col gap-2 md:flex" />
+         <VoteButtonGroup
+            postId={props.id}
+            className="mt-2 hidden flex-col gap-2 md:flex"
+         />
          <div className="flex h-fit min-h-max flex-1 flex-col gap-2 rounded-md bg-zinc-800 p-3 pb-0">
             <PostInfo {...props} />
             <div className="flex flex-col items-stretch gap-2">
@@ -109,7 +112,7 @@ export const Post = (props: PropsWithChildren<PostType>) => {
                )}
             </div>
             <div className="flex w-full items-stretch gap-2 border-t-[1px] border-white/20 md:gap-4">
-               <VoteButtonGroup className="flex md:hidden" />
+               <VoteButtonGroup postId={props.id} className="flex md:hidden" />
                <ActionButton className="group relative aspect-square min-w-fit md:aspect-auto [&>*]:hover:opacity-100">
                   <LuMessageSquare className="scale-[1.2] transform stroke-white opacity-80" />
                   <span className="hidden whitespace-nowrap text-xs text-white opacity-60 md:ml-2 md:block">

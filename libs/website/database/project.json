@@ -1,48 +1,55 @@
 {
-  "name": "website-database",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/website/database/src",
-  "projectType": "library",
-  "targets": {
-    "migrate": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "libs/website/database",
-        "command": "node tools/migrate.mjs"
-      }
-    },
-    "build": {
-      "executor": "@nx/js:swc",
-      "outputs": ["{options.outputPath}"],
-      "dependsOn": ["^build"],
-      "options": {
-        "outputPath": "dist/libs/website/database",
-        "main": "libs/website/database/src/index.ts",
-        "tsConfig": "libs/website/database/tsconfig.lib.json",
-        "assets": ["libs/website/database/*.md"]
-      }
-    },
-    "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["libs/website/database/**/*.ts"]
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "libs/website/database/jest.config.ts",
-        "passWithNoTests": true
+   "name": "website-database",
+   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+   "sourceRoot": "libs/website/database/src",
+   "projectType": "library",
+   "targets": {
+      "migrate": {
+         "executor": "nx:run-commands",
+         "options": {
+            "cwd": "libs/website/database",
+            "command": "node tools/migrate.mjs"
+         }
       },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+      "generate": {
+         "executor": "nx:run-commands",
+         "options": {
+            "cwd": "libs/website/database",
+            "command": "yarn generate"
+         }
+      },
+      "build": {
+         "executor": "@nx/js:swc",
+         "outputs": ["{options.outputPath}"],
+         "dependsOn": ["^build"],
+         "options": {
+            "outputPath": "dist/libs/website/database",
+            "main": "libs/website/database/src/index.ts",
+            "tsConfig": "libs/website/database/tsconfig.lib.json",
+            "assets": ["libs/website/database/*.md"]
+         }
+      },
+      "lint": {
+         "executor": "@nx/linter:eslint",
+         "outputs": ["{options.outputFile}"],
+         "options": {
+            "lintFilePatterns": ["libs/website/database/**/*.ts"]
+         }
+      },
+      "test": {
+         "executor": "@nx/jest:jest",
+         "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+         "options": {
+            "jestConfig": "libs/website/database/jest.config.ts",
+            "passWithNoTests": true
+         },
+         "configurations": {
+            "ci": {
+               "ci": true,
+               "codeCoverage": true
+            }
+         }
       }
-    }
-  },
-  "tags": []
+   },
+   "tags": []
 }

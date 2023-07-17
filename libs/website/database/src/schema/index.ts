@@ -11,6 +11,7 @@ import {
    PgBoolean,
    PgTableWithColumns,
    PgText,
+   integer,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { relations } from "drizzle-orm";
@@ -219,6 +220,7 @@ export const post = pgTable("post", {
       .defaultNow(),
    body: jsonb("body").notNull().$type<JSONContent>(),
    images: text("image_urls").array(),
+   votes: integer("votes").default(0),
 });
 
 export const postRel = relations(post, ({ one, many }) => ({
@@ -230,7 +232,7 @@ export const postRel = relations(post, ({ one, many }) => ({
       fields: [post.posterHandle],
       references: [page.handle],
    }),
-   votes: many(postVotes),
+   votesRelation: many(postVotes),
 }));
 
 //==================================================================

@@ -14,7 +14,7 @@ const pool = new pg.Pool({
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const migrationsFolder = path.resolve(__dirname, "../migrations");
+const migrationsFolder = path.resolve(__dirname, "../migrations/");
 
 (async () => {
    // this will automatically run needed migrations on the database

@@ -22,6 +22,7 @@ export type CreateAccountSchema = z.infer<typeof CREATE_ACCOUNT_SCHEMA>;
 export const createUserImpl = async (input: CreateAccountSchema) => {
    try {
       await db.execute(sql`BEGIN TRANSACTION`);
+
       let user: Auth.User;
 
       switch (input.id) {

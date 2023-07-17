@@ -1,7 +1,7 @@
 "use client";
-import { useToggleButton } from "@react-aria/button";
+import { useButton } from "@react-aria/button";
 import { mergeRefs } from "@react-aria/utils";
-import { ToggleProps, useToggleState } from "@react-stately/toggle";
+import { ToggleProps } from "@react-stately/toggle";
 import { useAnimate } from "framer-motion";
 import { ComponentProps, forwardRef } from "react";
 
@@ -22,14 +22,16 @@ import { cn } from "@website/utils";
 export const VoteButton = forwardRef<
    HTMLButtonElement,
    ComponentProps<"button"> & {
+      isActive: boolean;
+      onPress: () => void,
       variant: "up" | "down";
    } & ToggleProps
 >((props, fref) => {
    const [ref, animate] = useAnimate<HTMLButtonElement>();
-   const state = useToggleState(props);
-   const { buttonProps } = useToggleButton(
+   const { buttonProps } = useButton(
       {
-         onPressEnd() {
+         onPress() {
+            props.onPress();
             animate(
                ref.current,
                {
@@ -47,7 +49,6 @@ export const VoteButton = forwardRef<
             );
          },
       },
-      state,
       ref
    );
 
@@ -77,7 +78,7 @@ export const VoteButton = forwardRef<
             props.className
          )}
       >
-         {button[props.variant][state.isSelected ? 1 : 0]}
+         {button[props.variant][props.isActive ? 1 : 0]}
       </button>
    );
 });

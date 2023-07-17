@@ -11,10 +11,7 @@
     "composite": true,
     "declaration": true,
   },
-  "include": [
-    "**/*.ts",
-    "./src/**/*.ts"
-  ],
+  "include": [],
   "references": [
     {
       "path": "./tsconfig.lib.json"
