@@ -1,5 +1,5 @@
 import { authenicated } from "../../middleware";
-import { router, publicProcedure } from "../../trpc";
+import { router, procedure } from "../../trpc";
 import { auth } from "@website/lucia";
 
 import { SIGN_IN_SCHEMA, checkSession, getKey } from "./signin.utils";
@@ -9,14 +9,14 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
 export const authRouter = router({
-   create: publicProcedure
+   create: procedure
       .input(CREATE_ACCOUNT_SCHEMA)
       .mutation(async ({ input }) => {
          // TODO email validation link
          await createUserImpl(input);
       }),
 
-   signIn: publicProcedure
+   signIn: procedure
       .input(SIGN_IN_SCHEMA)
       .mutation(async ({ input, ctx }) => {
          try {
@@ -47,14 +47,14 @@ export const authRouter = router({
          }
       }),
 
-   signOut: publicProcedure.use(authenicated).mutation(async ({ ctx }) => {
+   signOut: procedure.use(authenicated).mutation(async ({ ctx }) => {
       Log.info("signOut");
 
       await auth.invalidateSession(ctx.auth.sessionId);
       auth.deleteDeadUserSessions(ctx.auth.userId);
       ctx.authRequest.setSession(null);
    }),
-   checkEmail: publicProcedure
+   checkEmail: procedure
       .input(z.object({ email: z.string().email() }))
       .query(async ({ ctx, input }) => {
          try {

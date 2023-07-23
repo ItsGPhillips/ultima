@@ -6,7 +6,7 @@ import {
    useInView,
    useIsomorphicLayoutEffect,
 } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
    UsePostsInfinateQueryOptions,
    usePostsInfinateQuery,
@@ -48,8 +48,15 @@ export const PageFeed = (props: PageFeedProps) => {
       document.body.style.setProperty("--feed-width", `${bounds.width}px`);
    }, [bounds.width]);
 
+   const ref = useRef<HTMLDivElement>(null);
    const [showSpinner, setShowSpinner] = useState(false);
+   const isInView = useInView(ref);
+
    useEffect(() => {
+      if (!isInView) {
+         setShowSpinner(false);
+         return;
+      }
       if (isLoading || isFetching) {
          setShowSpinner(true);
       } else {
@@ -58,7 +65,7 @@ export const PageFeed = (props: PageFeedProps) => {
          }, 1000);
          return () => clearTimeout(timeout);
       }
-   }, [isLoading || isFetching]);
+   }, [isLoading || isFetching, isInView]);
 
    return (
       <div ref={mref} className="mt-1">
@@ -67,34 +74,35 @@ export const PageFeed = (props: PageFeedProps) => {
                layoutRoot
                className="flex h-full flex-col items-stretch gap-2"
             >
-               {showSpinner && (
-                  <motion.div
-                     layout
-                     initial={{ opacity: 0, scale: 0.5 }}
-                     animate={{
-                        opacity: 1,
-                        // scale: 1,
-                        transition: {
-                           opacity: { duration: 0.2 },
-                           // scale: { duration: 0.3 },
-                        },
-                     }}
-                     exit={{
-                        opacity: 0,
-                        // scale: 0.5,
-                        transition: {
-                           opacity: { duration: 0.1, delay: 5 },
-                           // scale: { duration: 0.3, delay: 5 },
-                        },
-                     }}
-                     className="flex w-full items-center justify-center pl-10"
-                  >
-                     <div className="h-10 w-10">
-                        <Spinner />
-                     </div>
-                  </motion.div>
-               )}
-
+               <div ref={ref}>
+                  {showSpinner && (
+                     <motion.div
+                        layout
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{
+                           opacity: 1,
+                           // scale: 1,
+                           transition: {
+                              opacity: { duration: 0.2 },
+                              // scale: { duration: 0.3 },
+                           },
+                        }}
+                        exit={{
+                           opacity: 0,
+                           // scale: 0.5,
+                           transition: {
+                              opacity: { duration: 0.1, delay: 5 },
+                              // scale: { duration: 0.3, delay: 5 },
+                           },
+                        }}
+                        className="flex w-full items-center justify-center pl-10"
+                     >
+                        <div className="h-10 w-10">
+                           <Spinner />
+                        </div>
+                     </motion.div>
+                  )}
+               </div>
                {posts && posts.length >= 1 ? (
                   <>
                      {posts?.map((post) => {

@@ -4,6 +4,8 @@ import { Log } from "@website/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 
+import Color from "color";
+
 export const CREATE_ACCOUNT_SCHEMA = z.union([
    z.object({
       id: z.literal("email"),
@@ -60,6 +62,9 @@ export const createUserImpl = async (input: CreateAccountSchema) => {
             "This is a test page. This page was created automatically in the user.create endpoint " +
             "The more test I write here he better the test will be because it causes this to grow " +
             "and the text to wrap, but whatever la la la la la this is just random text anyway. Lorem ipsum hurts my eyes",
+
+         //TODO: Let the user choose a color
+         createdAt: new Color().hsl(Math.random() * 359, 75, 60).hex(),
       });
 
       await db.execute(sql`COMMIT TRANSACTION`);

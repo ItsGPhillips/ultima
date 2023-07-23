@@ -1,0 +1,1 @@
+ALTER TABLE "page" ALTER COLUMN "accent_color" SET NOT NULL;

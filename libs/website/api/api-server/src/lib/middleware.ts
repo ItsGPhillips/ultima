@@ -17,7 +17,7 @@ export const handleAuth = trpc.middleware(async ({ ctx, next }) => {
 });
 
 export const authenicated = handleAuth.unstable_pipe(async ({ ctx, next }) => {
-   Log.debug(ctx.auth)
+   Log.debug(ctx.auth);
    if (!ctx.auth.userId || !ctx.auth.sessionId) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
    }

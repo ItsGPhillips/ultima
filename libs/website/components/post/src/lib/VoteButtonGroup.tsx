@@ -16,23 +16,36 @@ export const VoteButtonGroup = (props: {
    const { data } = useUserPostVotesQuery({ postId: props.postId });
    const { mutate } = usePostVoteMutation({ postId: props.postId });
 
-   const isUpvote = data?.isUpvote ?? false;
+   let hasVote = false;
+   let isUpvote = true;
+   if (data && data.isUpvote !== null) {
+      hasVote = true;
+      isUpvote = data.isUpvote;
+   }
 
    return (
       <div ref={ref} className={cn("items-center", props.className)}>
          <VoteButton
-            isActive={isUpvote}
+            isActive={hasVote && isUpvote}
             variant="up"
             onPress={() => {
-               mutate({ isUpvote: true });
+               if(hasVote && isUpvote) {
+                  mutate({ isUpvote: null });
+               } else {
+                  mutate({ isUpvote: true });
+               }
             }}
          />
          <span className="shrink-0 font-bold">{0}</span>
          <VoteButton
-            isActive={!isUpvote}
+            isActive={hasVote && !isUpvote}
             variant="down"
             onPress={() => {
-               mutate({ isUpvote: false });
+               if(hasVote && !isUpvote) {
+                  mutate({ isUpvote: null });
+               } else {
+                  mutate({ isUpvote: false });
+               }
             }}
          />
       </div>

@@ -2,12 +2,14 @@
 
 import * as RadixAvatar from "@radix-ui/react-avatar";
 import { cn } from "@website/utils";
+import Color from "color";
 
 import { Roboto_Mono } from "next/font/google";
 const font = Roboto_Mono({ weight: ["700"], subsets: ["latin-ext"] });
 
 export type AvatarProps = {
    imageUrl?: string;
+   color: Color,
    name: string;
    className?: string;
 };
@@ -36,7 +38,7 @@ export const Avatar: React.FC<AvatarProps> = (props) => {
             )}
             delayMs={0}
             style={{
-               backgroundColor: `hsl(${Math.random() * 100}, 100%, 80%)`,
+               backgroundColor: props.color.hex(),
             }}
          >
             {c0}

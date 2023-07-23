@@ -8,9 +8,6 @@ import {
    varchar,
    jsonb,
    serial,
-   PgBoolean,
-   PgTableWithColumns,
-   PgText,
    integer,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
@@ -86,6 +83,7 @@ export const page = pgTable(
          .defaultNow(),
       details: text("details").notNull().default(""),
       allowExternal: boolean("allow_external").notNull().default(false),
+      accentColor: varchar("accent_color", { length: 7 }).notNull(),
    },
    (table) => ({
       primaryProfileIdIdx: index("primary_profile_id_idx").on(

@@ -25,6 +25,7 @@ export const HeaderOld = async () => {
             page: {
                columns: {
                   handle: true,
+                  accentColor: true,
                },
             },
          },
@@ -43,9 +44,7 @@ export const HeaderOld = async () => {
             <div className="flex w-60 items-center justify-center border-2">
                <Logo />
             </div>
-            <div className="border-2 flex-1 h-full">
-               TEST
-            </div>
+            <div className="h-full flex-1 border-2">TEST</div>
             <div
                className="ml-auto flex h-full items-center gap-4"
                suppressHydrationWarning
@@ -86,6 +85,7 @@ const getProfile = async () => {
             page: {
                columns: {
                   handle: true,
+                  accentColor: true,
                },
             },
          },
@@ -101,19 +101,23 @@ const HeaderImpl = async () => {
    return (
       <header
          className={cn(
-            "relative flex h-full w-full border-b-[1px] justify-between border-white/10 px-1 tmd:px-12",
+            "tmd:px-12 relative flex h-full w-full justify-between border-b-[1px] border-white/10 px-1",
             RemoveScroll.classNames.fullWidth
          )}
       >
-         <div className="relative w-36 h-full">
+         <div className="relative h-full w-36">
             <Logo />
          </div>
-         <div className="hidden tmd:flex items-end justify-center flex-1 p-1">
-            <div className="bg-white/10 rounded-xl h-full w-[30rem]"></div>
+         <div className="tmd:flex hidden flex-1 items-end justify-center p-1">
+            <div className="h-full w-[30rem] rounded-xl bg-white/10"></div>
          </div>
          <div className="flex items-center">
             {!!profile && (
-               <UserAvatar profile={profile} handle={profile.page.handle} />
+               <UserAvatar
+                  profile={profile}
+                  handle={profile.page.handle}
+                  accentColor={profile.page.accentColor ?? "green"}
+               />
             )}
             {!profile && (
                <div className="flex flex-nowrap items-center gap-2">

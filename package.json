@@ -106,6 +106,7 @@
       "@swc/jest": "0.2.20",
       "@swc/register": "^0.1.10",
       "@testing-library/react": "14.0.0",
+      "@types/color": "^3.0.3",
       "@types/jest": "^29.4.0",
       "@types/node": "18.14.2",
       "@types/pg": "^8.10.2",

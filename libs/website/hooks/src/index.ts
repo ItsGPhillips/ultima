@@ -3,3 +3,4 @@ export * from "./mutations/useToggleSubscriptionMutation";
 export * from "./queries/useIsSubscribedQuery";
 export * from "./queries/posts";
 export * from "./useRichTextEditor";
+export * from "./queries/profile";

@@ -4,6 +4,13 @@
    "sourceRoot": "libs/website/database/src",
    "projectType": "library",
    "targets": {
+      "studio": {
+         "executor": "nx:run-commands",
+         "options": {
+            "cwd": "libs/website/database",
+            "command": "yarn studio"
+         }
+      },
       "migrate": {
          "executor": "nx:run-commands",
          "options": {

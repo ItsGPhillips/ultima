@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "type": "commonjs",
   "scripts": {
-    "generate": "drizzle-kit generate:pg --config=drizzle.config.ts"
+    "generate": "drizzle-kit generate:pg --config=drizzle.config.ts",
+    "studio": "drizzle-kit studio --port 5433"
   }
 }

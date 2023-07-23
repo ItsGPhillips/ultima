@@ -10,8 +10,9 @@ import { Profile } from "@website/database";
 import { api } from "@website/api/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Color from "color";
 
-export const UserAvatar = (props: { profile: Profile; handle: string }) => {
+export const UserAvatar = (props: { profile: Profile; handle: string, accentColor: string}) => {
    const [menuOpen, setMenuOpen] = useState(false);
    const router = useRouter();
    return (
@@ -21,7 +22,7 @@ export const UserAvatar = (props: { profile: Profile; handle: string }) => {
                <div className="hidden text-sm font-semibold sm:block">{`${props.profile.firstName} ${props.profile.lastName}`}</div>
                <div className="hidden text-xs italic text-white/70 sm:block">{`@${props.handle}`}</div>
             </div>
-            <Avatar name={props.handle} />
+            <Avatar color={new Color(props.accentColor)} name={props.handle} />
          </Popover.Trigger>
          <AnimatePresence>
             {menuOpen && (

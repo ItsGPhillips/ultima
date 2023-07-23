@@ -1,4 +1,4 @@
-import { router, publicProcedure } from "../../trpc";
+import { router, procedure } from "../../trpc";
 import { z } from "zod";
 import { db, schema } from "@website/database";
 import { SQL, and, asc, desc, eq, inArray, sql } from "drizzle-orm";
@@ -8,6 +8,7 @@ import { Log } from "@website/utils";
 import { TRPCError } from "@trpc/server";
 import { authenicated } from "../../middleware";
 import { syncBuiltinESMExports } from "module";
+import { D } from "drizzle-orm/query-promise.d-0dd411fc";
 
 const GET_POST_VARIANTS = z
    .object({
@@ -33,69 +34,112 @@ const GET_VOTES_SCHEMA = z.object({
 });
 
 export const postsRouter = router({
-   getPosts: publicProcedure
-      .input(GET_POSTS_SCHEMA)
-      .query(async ({ input }) => {
-         let query = db
-            .select({ postedAt: schema.post.postedAt })
-            .from(schema.post);
+   getPosts: procedure.input(GET_POSTS_SCHEMA).query(async ({ input }) => {
+      let query = db
+         .select({ postedAt: schema.post.postedAt })
+         .from(schema.post);
 
-         if (input.lastId) {
-            query = query.where(eq(schema.post.id, input.lastId));
-         } else if (!input.homeFeed) {
-            query = query.where(eq(schema.post.handle, input.handle));
-         }
+      if (input.lastId) {
+         query = query.where(eq(schema.post.id, input.lastId));
+      } else if (!input.homeFeed) {
+         query = query.where(eq(schema.post.handle, input.handle));
+      }
 
-         const [lastPost] = await query
-            .orderBy(desc(schema.post.postedAt))
-            .limit(1);
+      const [lastPost] = await query
+         .orderBy(desc(schema.post.postedAt))
+         .limit(1);
 
-         if (!lastPost) {
-            throw new TRPCError({
-               code: "BAD_REQUEST",
-               message: `No post with id = ${input.lastId}`,
-            });
-         }
+      if (!lastPost) {
+         throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `No post with id = ${input.lastId}`,
+         });
+      }
 
-         switch (input.filter) {
-            case "NEWEST": {
-               try {
-                  const filters: Array<SQL> = [
-                     input.lastId !== undefined
-                        ? sql`${schema.post.postedAt} < ${lastPost.postedAt}::TIMESTAMP`
-                        : sql`${schema.post.postedAt} <= ${lastPost.postedAt}::TIMESTAMP`,
-                  ];
+      switch (input.filter) {
+         case "NEWEST": {
+            try {
+               const filters: Array<SQL> = [
+                  input.lastId !== undefined
+                     ? sql`${schema.post.postedAt} < ${lastPost.postedAt}::TIMESTAMP`
+                     : sql`${schema.post.postedAt} <= ${lastPost.postedAt}::TIMESTAMP`,
+               ];
 
-                  if (!input.homeFeed) {
-                     filters.push(eq(schema.post.handle, input.handle));
-                  }
-
-                  return await db
-                     .select()
-                     .from(post)
-                     .where(and(...filters))
-                     .orderBy(desc(schema.post.postedAt))
-                     .limit(input.limit);
-               } catch (e) {
-                  console.log(e);
-                  return [];
+               if (!input.homeFeed) {
+                  filters.push(eq(schema.post.handle, input.handle));
                }
+
+               return await db
+                  .select()
+                  .from(post)
+                  .where(and(...filters))
+                  .orderBy(desc(schema.post.postedAt))
+                  .limit(input.limit);
+            } catch (e) {
+               console.log(e);
+               return [];
             }
-            default:
-               throw "unimplimented";
+         }
+         default:
+            throw "unimplimented";
+      }
+   }),
+
+   getUserVote: procedure
+      .use(authenicated)
+      .input(
+         z.object({
+            postId: z.string(),
+         })
+      )
+      .query(async ({ ctx, input }) => {
+         try {
+            const currentlyAuthenticatedHandle =
+               await db.query.profile.findFirst({
+                  where: (profile, { eq }) => eq(profile.id, ctx.auth.userId),
+                  columns: {},
+                  with: {
+                     page: {
+                        columns: {
+                           handle: true,
+                        },
+                     },
+                  },
+               });
+
+            if (!currentlyAuthenticatedHandle) {
+               throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+            }
+
+            const [data] = await db
+               .select()
+               .from(schema.postVotes)
+               .where(
+                  and(
+                     eq(schema.postVotes.postId, input.postId),
+                     eq(
+                        schema.postVotes.handle,
+                        currentlyAuthenticatedHandle.page.handle
+                     )
+                  )
+               )
+               .limit(1);
+
+            return { isUpvote: data?.isUpvote ?? null };
+         } catch (e) {
+            Log.error(e);
+            throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
          }
       }),
-   getVotes: publicProcedure
-      .input(GET_VOTES_SCHEMA)
-      .query(async ({ input }) => {
-         const votes = await db
-            .select()
-            .from(schema.postVotes)
-            .where(eq(schema.postVotes.postId, input.postId));
-      }),
 
-      
-   getVotesBatched: publicProcedure
+   getVotes: procedure.input(GET_VOTES_SCHEMA).query(async ({ input }) => {
+      const votes = await db
+         .select()
+         .from(schema.postVotes)
+         .where(eq(schema.postVotes.postId, input.postId));
+   }),
+
+   getVotesBatched: procedure
       .input(z.object({ postIds: z.array(z.string()) }))
       .query(async ({ input }) => {
          let query = await db
@@ -104,9 +148,9 @@ export const postsRouter = router({
             .where(inArray(schema.postVotes.postId, input.postIds));
       }),
 
-   upsertPostVoteAction: publicProcedure
+   upsertPostVoteAction: procedure
       .use(authenicated)
-      .input(z.object({ postId: z.string(), isUpvote: z.boolean() }))
+      .input(z.object({ postId: z.string(), isUpvote: z.boolean().nullable() }))
       .mutation(async ({ ctx, input }) => {
          try {
             // TODO: combine these two queries into a single Postgres function.
@@ -119,6 +163,16 @@ export const postsRouter = router({
             if (!data) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
             const { handle } = data;
+
+            if (input.isUpvote === null) {
+               await db.delete(schema.postVotes).where(
+                  and(
+                     eq(schema.postVotes.handle, handle),
+                     eq(schema.postVotes.postId, input.postId)
+                  )
+               );
+               return;
+            }
 
             const payload = {
                handle,

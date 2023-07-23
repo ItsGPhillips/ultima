@@ -3,7 +3,7 @@
 import { env } from "@website/env";
 import { PropsWithChildren } from "react";
 import { Avatar, Seperator, Carousel } from "@website/components/shared";
-import { useRichTextEditor } from "@website/hooks";
+import { usePageAccentColor, useRichTextEditor } from "@website/hooks";
 import { VoteButtonGroup } from "./VoteButtonGroup";
 import { ActionButton } from "./Actionbutton";
 import { LuMessageSquare, LuPin } from "react-icons/lu";
@@ -15,12 +15,21 @@ import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 import { EditorContent } from "@tiptap/react";
 import NextImage from "next/image";
 import { motion } from "framer-motion";
+import Color from "color";
 
 const PostInfo = (props: PostType) => {
+   const { data: accentColor } = usePageAccentColor({
+      handle: props.handle,
+   });
+
    return (
       <div className="flex items-center gap-2">
          <Link href="#">
-            <Avatar name={props.handle} className="float-left block h-8 w-8" />
+            <Avatar
+               color={new Color(accentColor ?? "#ffffff4d")}
+               name={props.handle}
+               className="float-left block h-8 w-8"
+            />
          </Link>
          <div className="flex flex-col justify-center">
             <div className="flex items-center gap-2">

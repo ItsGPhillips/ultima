@@ -40,5 +40,4 @@ export const trpc = initTRPC.context<typeof _createTRPCContext>().create({
 });
 
 export const router = trpc.router;
-
-export const publicProcedure = trpc.procedure;
+export const procedure = trpc.procedure;
