@@ -68,7 +68,7 @@ export const PageFeed = (props: PageFeedProps) => {
    }, [isLoading || isFetching, isInView]);
 
    return (
-      <div ref={mref} className="mt-1">
+      <div ref={mref} className="">
          <AnimatePresence mode="popLayout">
             <motion.div
                layoutRoot
@@ -81,18 +81,14 @@ export const PageFeed = (props: PageFeedProps) => {
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{
                            opacity: 1,
-                           // scale: 1,
                            transition: {
                               opacity: { duration: 0.2 },
-                              // scale: { duration: 0.3 },
                            },
                         }}
                         exit={{
                            opacity: 0,
-                           // scale: 0.5,
                            transition: {
                               opacity: { duration: 0.1, delay: 5 },
-                              // scale: { duration: 0.3, delay: 5 },
                            },
                         }}
                         className="flex w-full items-center justify-center pl-10"
