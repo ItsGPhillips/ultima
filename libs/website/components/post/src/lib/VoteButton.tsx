@@ -14,10 +14,6 @@ import {
 import colors from "tailwindcss/colors";
 import { cn } from "@website/utils";
 
-/**
- * TODO TODO TODO
- * make this reflect database state
- */
 
 export const VoteButton = forwardRef<
    HTMLButtonElement,

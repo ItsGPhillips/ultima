@@ -3,7 +3,10 @@
 import { env } from "@website/env";
 import { PropsWithChildren } from "react";
 import { Avatar, Seperator, Carousel } from "@website/components/shared";
-import { usePageAccentColor, useRichTextEditor } from "@website/hooks";
+import {
+   usePageAccentColor,
+   useRichTextEditor,
+} from "@website/hooks";
 import { VoteButtonGroup } from "./VoteButtonGroup";
 import { ActionButton } from "./Actionbutton";
 import { LuMessageSquare, LuPin } from "react-icons/lu";
@@ -92,6 +95,7 @@ export const Post = (props: PropsWithChildren<PostType>) => {
       content: props.body,
       autofocus: false,
    });
+
 
    const images = props.images ?? [];
 

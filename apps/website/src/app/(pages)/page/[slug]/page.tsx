@@ -6,11 +6,14 @@ import { PageFeed } from "@website/components/page";
 
 const Page = async (ctx: any) => {
    const ua = userAgent({ headers: headers() });
+
+   console.log(ctx)
+
    return (
       <>
          {ua.device.type === "mobile" && <HeaderScrollHandle />}
          <FeedControls handle={ctx.params.slug} />
-         <PageFeed handle={ctx.params.slug} />
+         <PageFeed handle={ctx.params.slug} homeFeed={false}/>
       </>
    );
 };

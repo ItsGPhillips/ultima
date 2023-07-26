@@ -47,7 +47,7 @@ export const SignInDialog = observer(() => {
    const dialogState = useDialogState();
 
    return (
-      <div className="flex max-h-[75vh] w-[400px] max-w-full flex-col bg-zinc-900 p-4 text-black">
+      <div className="flex max-h-[75vh] w-full max-w-full flex-col bg-zinc-900 p-4 px-[12%] text-black">
          <div className="flex h-16 w-full shrink-0 items-center justify-center">
             <Dialog.Title className="text-xl font-bold text-white">
                Sign In

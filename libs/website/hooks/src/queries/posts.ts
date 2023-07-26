@@ -32,24 +32,35 @@ export const usePostsInfinateQuery = (
    options: UsePostsInfinateQueryOptions
 ) => {
    return useInfiniteQuery<Post[]>({
-      queryKey: [{ feed: true }, "posts", options.filter],
+      queryKey: [
+         { feed: options.homeFeed ?? false, handle: options.handle },
+         "posts",
+         options.filter,
+      ],
       queryFn: async ({ pageParam = { lastId: undefined } }) => {
          return await api.post.getPosts.query({
             ...options,
             lastId: pageParam.lastId,
+            handle: options.handle ?? "",
+            homeFeed: options.homeFeed ?? false,
          });
       },
       getNextPageParam,
    });
 };
 
-const makePostVoteQueryKey = (postId: string) => ["post", postId, "votes"];
+const makePostVoteQueryKey = (postId: string, ...extra: string[]) => [
+   "post",
+   postId,
+   "votes",
+   ...extra,
+];
 
-export const usePostVotesQuery = (options: { postId: string }) => {
+export const usePostVoteCountQuery = (options: { postId: string }) => {
    return useQuery({
-      queryKey: makePostVoteQueryKey(options.postId),
+      queryKey: makePostVoteQueryKey(options.postId, "count"),
       queryFn: async () => {
-         return { votes: 0 };
+         return await api.post.getVotes.query(options);
       },
    });
 };
@@ -78,7 +89,7 @@ export const usePostVoteMutation = (options: { postId: string }) => {
          });
       },
       onMutate: async (input) => {
-         console.log(input)
+         console.log(input);
          await client.cancelQueries({ queryKey });
          const prev = client.getQueryData<{ isUpvote: boolean | null }>(
             queryKey,
@@ -96,6 +107,9 @@ export const usePostVoteMutation = (options: { postId: string }) => {
       },
       onSettled: () => {
          client.invalidateQueries({ queryKey });
+         client.invalidateQueries({
+            queryKey: makePostVoteQueryKey(options.postId, "count"),
+         });
       },
    });
 };

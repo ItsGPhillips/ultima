@@ -49,11 +49,14 @@ export const postsRouter = router({
          .orderBy(desc(schema.post.postedAt))
          .limit(1);
 
-      if (!lastPost) {
-         throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: `No post with id = ${input.lastId}`,
-         });
+      if (lastPost === undefined) {
+         if (!!input.lastId) {
+            throw new TRPCError({
+               code: "BAD_REQUEST",
+               message: `No post with id = ${input.lastId}`,
+            });
+         }
+         return [];
       }
 
       switch (input.filter) {
@@ -133,10 +136,13 @@ export const postsRouter = router({
       }),
 
    getVotes: procedure.input(GET_VOTES_SCHEMA).query(async ({ input }) => {
-      const votes = await db
-         .select()
-         .from(schema.postVotes)
-         .where(eq(schema.postVotes.postId, input.postId));
+      const [data] = await db
+         .select({ votes: schema.post.votes })
+         .from(schema.post)
+         .where(eq(schema.post.id, input.postId));
+         
+      if (!data) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      return data;
    }),
 
    getVotesBatched: procedure
@@ -165,12 +171,14 @@ export const postsRouter = router({
             const { handle } = data;
 
             if (input.isUpvote === null) {
-               await db.delete(schema.postVotes).where(
-                  and(
-                     eq(schema.postVotes.handle, handle),
-                     eq(schema.postVotes.postId, input.postId)
-                  )
-               );
+               await db
+                  .delete(schema.postVotes)
+                  .where(
+                     and(
+                        eq(schema.postVotes.handle, handle),
+                        eq(schema.postVotes.postId, input.postId)
+                     )
+                  );
                return;
             }
 

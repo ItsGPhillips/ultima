@@ -1,10 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-   AriaButton,
-   Avatar,
-   Popover,
-} from "@website/components/shared";
+import { AriaButton, Avatar, Popover } from "@website/components/shared";
 import { useState } from "react";
 import { Profile } from "@website/database";
 import { api } from "@website/api/client";
@@ -12,7 +8,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Color from "color";
 
-export const UserAvatar = (props: { profile: Profile; handle: string, accentColor: string}) => {
+export const UserAvatar = (props: {
+   profile: Profile;
+   handle: string;
+   accentColor: string;
+}) => {
    const [menuOpen, setMenuOpen] = useState(false);
    const router = useRouter();
    return (
@@ -39,17 +39,26 @@ export const UserAvatar = (props: { profile: Profile; handle: string, accentColo
                         className="z-[1000] m-2 w-[260px] rounded-2xl border-[1px] border-zinc-600 bg-zinc-800 p-5 shadow-xl shadow-black/50"
                      >
                         <div className="flex flex-col items-stretch gap-2">
-                           <span>{`${props.profile.firstName} ${props.profile.lastName}`}</span>
+                           <span className="font-bold ">{`${props.profile.firstName} ${props.profile.lastName}`}</span>
 
                            <Link
                               href={`/page/${props.handle}`}
-                              className="text-link"
+                              className="rounded-md border-[1px] border-white/10 p-2 hover:border-white/5 hover:bg-black/20"
                            >
                               Profile Page
                            </Link>
-
-                           <span>Account</span>
-                           <span>Settings</span>
+                           <Link
+                              href={"#"}
+                              className="cursor-not-allowed rounded-md border-[1px] border-white/10 p-2 text-white/20"
+                           >
+                              Account
+                           </Link>
+                           <Link
+                              href={"#"}
+                              className="cursor-not-allowed rounded-md border-[1px] border-white/10 p-2 text-white/20"
+                           >
+                              Settings
+                           </Link>
                            <AriaButton
                               className="rounded-lg border-2 border-red-400 bg-red-400/30 px-2 py-1 text-sm text-white hover:bg-red-400/50"
                               onPress={async () => {

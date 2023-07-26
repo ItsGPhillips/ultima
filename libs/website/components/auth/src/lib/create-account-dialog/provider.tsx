@@ -20,7 +20,7 @@ export const useCreateAccountState = () => {
    return ctx;
 };
 
-type FieldStates = {
+export type FieldStates = {
    handle: FieldState;
    email: FieldState;
    profileImage: FieldState<File>;
@@ -117,6 +117,7 @@ export const Provider = (props: PropsWithChildren) => {
 
       await api.auth.create.mutate({
          id: "email",
+         accentColor: "#ffffff",
          email: fields.email.value!,
          handle: fields.handle.value!,
          firstName: fields.firstName.value!,

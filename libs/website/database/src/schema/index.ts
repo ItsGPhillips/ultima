@@ -218,7 +218,7 @@ export const post = pgTable("post", {
       .defaultNow(),
    body: jsonb("body").notNull().$type<JSONContent>(),
    images: text("image_urls").array(),
-   votes: integer("votes").default(0),
+   votes: integer("votes").default(0).notNull(),
 });
 
 export const postRel = relations(post, ({ one, many }) => ({

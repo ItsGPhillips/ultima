@@ -5,7 +5,7 @@ import { useInView } from "framer-motion";
 import { cn } from "@website/utils";
 import { VoteButton } from "./VoteButton";
 import { useEffect, useRef, useState } from "react";
-import { usePostVoteMutation, useUserPostVotesQuery } from "@website/hooks";
+import { usePostVoteCountQuery, usePostVoteMutation, useUserPostVotesQuery } from "@website/hooks";
 
 export const VoteButtonGroup = (props: {
    className?: string;
@@ -15,6 +15,8 @@ export const VoteButtonGroup = (props: {
    // const isInView = useInView(ref, { amount: "some" });
    const { data } = useUserPostVotesQuery({ postId: props.postId });
    const { mutate } = usePostVoteMutation({ postId: props.postId });
+   const { data: count } = usePostVoteCountQuery({ postId: props.postId });
+
 
    let hasVote = false;
    let isUpvote = true;
@@ -36,7 +38,7 @@ export const VoteButtonGroup = (props: {
                }
             }}
          />
-         <span className="shrink-0 font-bold">{0}</span>
+         <span className="shrink-0 font-bold text-sm">{count?.votes ?? 0}</span>
          <VoteButton
             isActive={hasVote && !isUpvote}
             variant="down"

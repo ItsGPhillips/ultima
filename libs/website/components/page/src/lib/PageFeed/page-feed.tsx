@@ -72,9 +72,9 @@ export const PageFeed = (props: PageFeedProps) => {
          <AnimatePresence mode="popLayout">
             <motion.div
                layoutRoot
-               className="flex h-full flex-col items-stretch gap-2"
+               className="flex h-full flex-col items-stretch"
             >
-               <div ref={ref}>
+               <motion.div ref={ref} className="h-1">
                   {showSpinner && (
                      <motion.div
                         layout
@@ -91,18 +91,21 @@ export const PageFeed = (props: PageFeedProps) => {
                               opacity: { duration: 0.1, delay: 5 },
                            },
                         }}
-                        className="flex w-full items-center justify-center pl-10"
+                        className="flex w-full items-center justify-center pl-10 min-h-[2px]"
                      >
                         <div className="h-10 w-10">
                            <Spinner />
                         </div>
                      </motion.div>
                   )}
-               </div>
+               </motion.div>
                {posts && posts.length >= 1 ? (
                   <>
                      {posts?.map((post) => {
-                        return <Post key={post.id} {...post} />;
+                        return <>
+                           <Post key={post.id} {...post} />
+                           <div key={"_" + post.id} className="h-1"></div>
+                        </> 
                      })}
                      <PostLoader
                         hasNextPage={Boolean(hasNextPage)}
