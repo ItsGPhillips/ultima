@@ -11,18 +11,7 @@ import Color from "color";
 import { formatDistanceToNowStrict } from "date-fns";
 import Link from "next/link";
 
-const COMMENT_DATA = [
-   {
-      handle: "test",
-      postId: "h7at57lk2g6k1uurt4ze8jl0",
-      postedAt: new Date(),
-      commentId: "123",
-      parent: null,
-      comment: "Test Comment",
-   },
-];
-
-export const CommentInfo = (props: { handle: string; postedAt: string }) => {
+const CommentInfo = (props: { handle: string; postedAt: string }) => {
    const { data: accentColor } = usePageAccentColor({
       handle: props.handle,
    });
@@ -56,9 +45,10 @@ export const CommentInfo = (props: { handle: string; postedAt: string }) => {
 
 const CommentsSection = (props: { postId: string }) => {
    return (
-      <div className="w-full">
-         <div className="p-4 flex justify-between">
-            <div className="text-xl">Comments</div>
+      <div className="w-full flex flex-col gap-2">
+         <Seperator className=""/>
+         <div className="flex justify-between px-4">
+            <div className="text-xl flex items-center">Comments</div>
             <AriaButton className="border-2 border-green-400 bg-green-400/30 px-4">
                New Comment
             </AriaButton>
