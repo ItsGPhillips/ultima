@@ -4,12 +4,44 @@ import * as RadixAvatar from "@radix-ui/react-avatar";
 import { cn } from "@website/utils";
 import Color from "color";
 
-import { Roboto_Mono } from "next/font/google";
-const font = Roboto_Mono({ weight: ["700"], subsets: ["latin-ext"] });
+// import Local from "next/font/local";
+
+// const font = Local({
+//    src: [
+//       {
+//          path: "./fonts/Roboto-Regular.ttf",
+//          weight: "400",
+//          style: "normal",
+//       },
+//       {
+//          path: "./fonts/Roboto-Bold.ttf",
+//          weight: "700",
+//          style: "bold",
+//       },
+//       {
+//          path: "./fonts/Roboto-Italic.ttf",
+//          weight: "400",
+//          style: "italic",
+//       },
+//       {
+//          path: "./fonts/Roboto-Light.ttf",
+//          weight: "400",
+//          style: "normal",
+//       },
+//       {
+//          path: "./fonts/Roboto-LightItalic.ttf",
+//          weight: "400",
+//          style: "italic",
+//       },
+//    ],
+// });
+
+// import { Inter } from "next/font/google";
+// const font = Inter({ weight: ["700"], subsets: ["latin"], display: 'swap', adjustFontFallback: false });
 
 export type AvatarProps = {
    imageUrl?: string;
-   color: Color,
+   color: Color;
    name: string;
    className?: string;
 };
@@ -34,7 +66,6 @@ export const Avatar: React.FC<AvatarProps> = (props) => {
          <RadixAvatar.Fallback
             className={cn(
                "flex h-full w-full items-center justify-center rounded-full text-center align-middle text-xl font-bold text-black/80 subpixel-antialiased",
-               font.className
             )}
             delayMs={0}
             style={{

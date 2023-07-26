@@ -1,29 +1,27 @@
 {
-   "name": "website-env",
-   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-   "sourceRoot": "libs/website/env/src",
-   "projectType": "library",
-   "targets": {
-      "build": {
-         "executor": "@nx/js:swc",
-         "outputs": ["{options.outputPath}"],
-         "options": {
-            "outputPath": "dist/libs/website/env",
-            "main": "libs/website/env/src/index.mjs",
-            "tsConfig": "libs/website/env/tsconfig.lib.json",
-            "assets": ["libs/website/env/*.md"]
-         }
-      },
-      "lint": {
-         "executor": "@nx/linter:eslint",
-         "outputs": ["{options.outputFile}"],
-         "options": {
-            "lintFilePatterns": [
-               "libs/website/env/**/*.js",
-               "libs/website/env/**/*.mjs"
-            ]
-         }
+  "name": "website-env",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/website/env/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/website/env",
+        "main": "libs/website/env/src/index.mjs",
+        "tsConfig": "libs/website/env/tsconfig.lib.json",
+        "assets": ["libs/website/env/*.md"],
+        "generatePackageJson": true
       }
-   },
-   "tags": []
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/website/env/**/*.mjs"]
+      }
+    }
+  },
+  "tags": []
 }

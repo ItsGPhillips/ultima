@@ -6,9 +6,6 @@ import { PageFeed } from "@website/components/page";
 
 const Page = async (ctx: any) => {
    const ua = userAgent({ headers: headers() });
-
-   console.log(ctx)
-
    return (
       <>
          {ua.device.type === "mobile" && <HeaderScrollHandle />}

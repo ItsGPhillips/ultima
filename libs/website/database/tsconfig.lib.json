@@ -9,11 +9,14 @@
   },
   "include": [
     "src/**/*.ts",
-    "drizzle.config.ts"
+    "drizzle.config.ts",
+    "../../env/src/index.mjs"
   ],
   "exclude": [
     "jest.config.ts",
     "src/**/*.spec.ts",
-    "src/**/*.test.ts"
+    "src/**/*.test.ts",
+    "../../../dist/out-tsc",
+    "node_modules"
   ]
 }

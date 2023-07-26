@@ -1,14 +1,10 @@
 import { router, procedure } from "../../trpc";
 import { z } from "zod";
 import { db, schema } from "@website/database";
-import { SQL, and, asc, desc, eq, inArray, sql } from "drizzle-orm";
-
-import { post } from "libs/website/database/src/schema";
+import { SQL, and, desc, eq, inArray, sql } from "drizzle-orm";
 import { Log } from "@website/utils";
 import { TRPCError } from "@trpc/server";
 import { authenicated } from "../../middleware";
-import { syncBuiltinESMExports } from "module";
-import { D } from "drizzle-orm/query-promise.d-0dd411fc";
 
 const GET_POST_VARIANTS = z
    .object({
@@ -74,7 +70,7 @@ export const postsRouter = router({
 
                return await db
                   .select()
-                  .from(post)
+                  .from(schema.post)
                   .where(and(...filters))
                   .orderBy(desc(schema.post.postedAt))
                   .limit(input.limit);

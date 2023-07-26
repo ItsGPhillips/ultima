@@ -2,7 +2,7 @@ import { cn } from "@website/utils";
 import { action } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useFocusRing, VisuallyHidden } from "react-aria";
-import { FieldState } from "../create-account-dialog/provider";
+import { FieldState } from "../input/state";
 
 type InputProps = {
    name: string;

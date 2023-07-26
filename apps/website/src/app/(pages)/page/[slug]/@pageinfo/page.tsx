@@ -4,6 +4,7 @@ import { BiCake } from "react-icons/bi";
 import { Seperator, Avatar, Badge } from "@website/components/shared";
 import { Log, cn } from "@website/utils";
 import { db } from "@website/database";
+import Color from "color";
 
 const Page = async (ctx: any) => {
    const page = await db.query.page.findFirst({
@@ -54,6 +55,7 @@ const Page = async (ctx: any) => {
             {page.badges.map((badge) => {
                return (
                   <Badge
+                     key={badge.name}
                      variant={badge.name}
                      ignoreIcon={badge.name === "admin"}
                   />
@@ -95,6 +97,7 @@ const Page = async (ctx: any) => {
                               suppressHydrationWarning
                            >
                               <Avatar
+                                 color={new Color(page.accentColor)}
                                  name="Test Name"
                                  className="float-left block h-6 w-6 shrink-0 text-sm"
                               />

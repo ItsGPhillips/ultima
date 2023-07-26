@@ -6,6 +6,8 @@
  */
 
 // HACK: how to avoid relative path for this??
+// const { env } = await import("../../libs/website/env/src/index.js");
+
 const { env } = await import("../../libs/website/env/src/index.mjs");
 
 import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
@@ -28,15 +30,15 @@ const nextConfig = {
       // See: https://github.com/gregberge/svgr
       svgr: false,
    },
-   webpack: (config) => {
-      config.resolve.plugins.push(
-         new TsconfigPathsPlugin({
-            configFile: "apps/website/tsconfig.json",
-            extensions: ["ts", "tsx", "js", "jsx", "mjs"],
-         })
-      );
-      return config;
-   },
+   // webpack: (config) => {
+   //    config.resolve.plugins.push(
+   //       new TsconfigPathsPlugin({
+   //          configFile: "apps/website/tsconfig.json",
+   //          extensions: ["ts", "tsx", "js", "jsx", "mjs"],
+   //       })
+   //    );
+   //    return config;
+   // },
 };
 
 const plugins = [

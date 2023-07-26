@@ -1,4 +1,4 @@
-import { env } from "libs/website/env/src/index.mjs";
+import { env } from "../../env/src/index.mjs";
 import lucia from "lucia-auth";
 import { nextjs } from "lucia-auth/middleware";
 import { adapter } from "./adapter";

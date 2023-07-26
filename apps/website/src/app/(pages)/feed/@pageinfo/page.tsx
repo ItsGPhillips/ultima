@@ -2,7 +2,7 @@ import React from "react";
 import { MdCopyright } from "react-icons/md";
 import { cn } from "@website/utils";
 
-const Page = async (ctx: any) => {
+const Page = async (_ctx: unknown) => {
    return (
       <div
          className={cn(

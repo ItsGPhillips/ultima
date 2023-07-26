@@ -6,7 +6,6 @@ import {
    useScroll,
    useTransform,
 } from "framer-motion";
-import NextImage from "next/image";
 import { cn } from "@website/utils";
 import { PropsWithChildren } from "react";
 

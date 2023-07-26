@@ -1,78 +1,78 @@
 {
-   "compileOnSave": false,
-   "compilerOptions": {
-      "allowJs": true,
-      "checkJs": true,
-      "rootDir": ".",
-      "sourceMap": true,
-      "declaration": false,
-      "moduleResolution": "node",
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "importHelpers": true,
-      "target": "ES6",
-      "module": "esnext",
-      "lib": [
-         "es2020",
-         "dom"
+  "compileOnSave": false,
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES6",
+    "module": "esnext",
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "skipLibCheck": true,
+    "strict": true,
+    "skipDefaultLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@website/env": [
+        "libs/website/env/src/index.mjs"
       ],
-      "skipLibCheck": true,
-      "strict": true,
-      "skipDefaultLibCheck": true,
-      "noUncheckedIndexedAccess": true,
-      "forceConsistentCasingInFileNames": true,
-      "allowSyntheticDefaultImports": true,
-      "baseUrl": ".",
-      "paths": {
-         "@website/actions": [
-            "libs/website/actions/src/index.ts"
-         ],
-         "@website/api/client": [
-            "libs/website/api/api-client/src/index.ts"
-         ],
-         "@website/api/server": [
-            "libs/website/api/api-server/src/index.ts"
-         ],
-         "@website/components/auth": [
-            "libs/website/components/auth/src/index.ts"
-         ],
-         "@website/components/header": [
-            "libs/website/components/header/src/index.tsx"
-         ],
-         "@website/components/page": [
-            "libs/website/components/page/src/index.ts"
-         ],
-         "@website/components/post": [
-            "libs/website/components/post/src/index.ts"
-         ],
-         "@website/components/providers": [
-            "libs/website/components/providers/src/index.ts"
-         ],
-         "@website/components/shared": [
-            "libs/website/components/shared/src/index.ts"
-         ],
-         "@website/database": [
-            "libs/website/database/src/index.ts"
-         ],
-         "@website/env": [
-            "libs/website/env/src/index.mjs"
-         ],
-         "@website/hooks": [
-            "libs/website/hooks/src/index.ts"
-         ],
-         "@website/lucia": [
-            "libs/website/lucia/src/index.ts"
-         ],
-         "@website/rich-text-editor": [
-            "libs/website/rich-text-editor/src/index.ts"
-         ],
-         "@website/utils": [
-            "libs/website/utils/src/index.ts"
-         ]
-      }
-   },
-   "exclude": [
-      "node_modules",
-      "tmp"
-   ]
+      "@website/actions": [
+        "libs/website/actions/src/index.ts"
+      ],
+      "@website/api/client": [
+        "libs/website/api/api-client/src/index.ts"
+      ],
+      "@website/api/server": [
+        "libs/website/api/api-server/src/index.ts"
+      ],
+      "@website/components/auth": [
+        "libs/website/components/auth/src/index.ts"
+      ],
+      "@website/components/header": [
+        "libs/website/components/header/src/index.tsx"
+      ],
+      "@website/components/page": [
+        "libs/website/components/page/src/index.ts"
+      ],
+      "@website/components/post": [
+        "libs/website/components/post/src/index.ts"
+      ],
+      "@website/components/providers": [
+        "libs/website/components/providers/src/index.ts"
+      ],
+      "@website/components/shared": [
+        "libs/website/components/shared/src/index.ts"
+      ],
+      "@website/database": [
+        "libs/website/database/src/index.ts"
+      ],
+      "@website/hooks": [
+        "libs/website/hooks/src/index.ts"
+      ],
+      "@website/lucia": [
+        "libs/website/lucia/src/index.ts"
+      ],
+      "@website/rich-text-editor": [
+        "libs/website/rich-text-editor/src/index.ts"
+      ],
+      "@website/utils": [
+        "libs/website/utils/src/index.ts"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

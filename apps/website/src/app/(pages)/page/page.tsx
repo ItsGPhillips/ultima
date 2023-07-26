@@ -1,7 +1,7 @@
 "use client";
 
 const Page = () => {
-   return <button onClick={() => {}}>Click Me</button>;
+   return <button>Click Me</button>;
 };
 
 export default Page;
