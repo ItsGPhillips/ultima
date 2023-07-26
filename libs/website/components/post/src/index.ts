@@ -1,1 +1,1 @@
-export { Post } from "./lib/post";
+export { Post, PostInfo, PostBody } from "./lib/post";

@@ -9,11 +9,14 @@ import {
    jsonb,
    serial,
    integer,
+   foreignKey,
+   AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { relations } from "drizzle-orm";
 import { DATABASE_CUID_LENGTH } from "@website/utils";
 import { JSONContent } from "@tiptap/react";
+import { on } from "events";
 
 //==================================================================
 // Auth schema defined buy lucia-auth
@@ -297,4 +300,47 @@ export const userUploadedMediaRel = relations(userUploadedMedia, ({ one }) => ({
       fields: [userUploadedMedia.profileId],
       references: [profile.id],
    }),
+}));
+
+//==================================================================
+
+export const comment = pgTable("post_comments", {
+   id: serial("id").notNull().primaryKey(),
+   handle: text("handle")
+      .notNull()
+      .references(() => page.handle, {
+         onDelete: "cascade",
+         onUpdate: "cascade",
+      }),
+   postId: varchar("post_id", { length: DATABASE_CUID_LENGTH })
+      .notNull()
+      .references(() => post.id, {
+         onDelete: "cascade",
+         onUpdate: "cascade",
+      }),
+   parentId: integer("parent_id").references((): AnyPgColumn => comment.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+   }),
+   postedAt: timestamp("posted_at", { withTimezone: true, mode: "string" })
+      .notNull()
+      .defaultNow(),
+   comment: text("comment").notNull(),
+});
+
+export const commentRel = relations(comment, ({ one, many }) => ({
+   page: one(page, {
+      fields: [comment.handle],
+      references: [page.handle],
+   }),
+   post: one(post, {
+      fields: [comment.postId],
+      references: [post.id],
+   }),
+   parent: one(comment, {
+      relationName: "parent_rel",
+      fields: [comment.parentId],
+      references: [comment.id],
+   }),
+   replies: many(comment, { relationName: "parent_rel" }),
 }));

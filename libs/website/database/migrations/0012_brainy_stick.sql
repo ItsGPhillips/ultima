@@ -1,0 +1,1 @@
+ALTER TABLE "post_comments" ADD COLUMN "posted_at" timestamp with time zone DEFAULT now() NOT NULL;

@@ -1,3 +1,5 @@
+"use client"
+
 import { Content } from "@tiptap/react";
 import { useState, useTransition } from "react";
 import { createEditor } from "@website/rich-text-editor";

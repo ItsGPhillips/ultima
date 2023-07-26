@@ -9,8 +9,15 @@ import {
 import { RouterInputs } from "@website/api/server";
 import { api } from "@website/api/client";
 import { Post } from "@website/database";
-import { Log } from "@website/utils";
 
+export const usePostQuery = (options: { postId: string }) => {
+   return useQuery({
+      queryKey: ["post", options.postId],
+      queryFn: async () => {
+         return await api.post.getPost.query(options);
+      },
+   });
+};
 const getNextPageParam = (lastPage: Post[], pages: Post[][]) => {
    if (pages.length === 0) return { lastId: undefined };
    const last = lastPage[lastPage.length - 1];
@@ -111,5 +118,19 @@ export const usePostVoteMutation = (options: { postId: string }) => {
             queryKey: makePostVoteQueryKey(options.postId, "count"),
          });
       },
+   });
+};
+
+export const useCommentsQuery = (options: { postId: string; parentId: number | null }) => {
+   return useQuery({
+      queryKey: [
+         "post",
+         options.postId,
+         "comments",
+         { parentId: options.parentId },
+      ],
+      queryFn: async () => {
+         return await api.post.getComments.query(options);
+      }
    });
 };

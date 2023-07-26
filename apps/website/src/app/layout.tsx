@@ -19,7 +19,11 @@ export const metadata = {
    description: "Portfolio Social media website by George Phillips",
 };
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
+const RootLayout = ({
+   children,
+}: {
+   children: React.ReactNode;
+}) => {
    const csrfToken = headers().get("X-CSRF-Token") ?? null;
    return (
       <CSRFProvider csrfToken={csrfToken}>

@@ -3,10 +3,7 @@
 import { env } from "@website/env";
 import { PropsWithChildren } from "react";
 import { Avatar, Seperator, Carousel } from "@website/components/shared";
-import {
-   usePageAccentColor,
-   useRichTextEditor,
-} from "@website/hooks";
+import { usePageAccentColor, useRichTextEditor } from "@website/hooks";
 import { VoteButtonGroup } from "./VoteButtonGroup";
 import { ActionButton } from "./Actionbutton";
 import { LuMessageSquare, LuPin } from "react-icons/lu";
@@ -20,7 +17,7 @@ import NextImage from "next/image";
 import { motion } from "framer-motion";
 import Color from "color";
 
-const PostInfo = (props: PostType) => {
+export const PostInfo = (props: PostType) => {
    const { data: accentColor } = usePageAccentColor({
       handle: props.handle,
    });
@@ -89,16 +86,36 @@ const ImageDisplay = (props: { name: string }) => {
    );
 };
 
-export const Post = (props: PropsWithChildren<PostType>) => {
+export const PostBody = (props: PostType) => {
    const editor = useRichTextEditor({
       editable: false,
       content: props.body,
       autofocus: false,
    });
 
-
    const images = props.images ?? [];
 
+   return (
+      <div className="flex flex-col items-stretch gap-2">
+         {editor.getText().trim().length > 0 && (
+            <EditorContent editor={editor} autoFocus={false} scrolling="no" />
+         )}
+         {images.length > 0 && (
+            <Carousel className="h-[24rem]">
+               {images.map((name) => {
+                  return (
+                     <Carousel.Slide className="relative" key={name}>
+                        <ImageDisplay name={name} />
+                     </Carousel.Slide>
+                  );
+               })}
+            </Carousel>
+         )}
+      </div>
+   );
+};
+
+export const Post = (props: PropsWithChildren<PostType>) => {
    return (
       <motion.div
          layout
@@ -111,26 +128,7 @@ export const Post = (props: PropsWithChildren<PostType>) => {
          />
          <div className="flex h-fit min-h-max flex-1 flex-col gap-2 rounded-md bg-zinc-800 p-3 pb-0">
             <PostInfo {...props} />
-            <div className="flex flex-col items-stretch gap-2">
-               {editor.getText().trim().length > 0 && (
-                  <EditorContent
-                     editor={editor}
-                     autoFocus={false}
-                     scrolling="no"
-                  />
-               )}
-               {images.length > 0 && (
-                  <Carousel className="h-[24rem]">
-                     {images.map((name) => {
-                        return (
-                           <Carousel.Slide className="relative" key={name}>
-                              <ImageDisplay name={name} />
-                           </Carousel.Slide>
-                        );
-                     })}
-                  </Carousel>
-               )}
-            </div>
+            <PostBody {...props} />
             <div className="flex w-full items-stretch gap-2 border-t-[1px] border-white/20 md:gap-4">
                <VoteButtonGroup postId={props.id} className="flex md:hidden" />
                <ActionButton className="group relative aspect-square min-w-fit md:aspect-auto [&>*]:hover:opacity-100">
@@ -151,9 +149,11 @@ export const Post = (props: PropsWithChildren<PostType>) => {
                      Share
                   </span>
                </ActionButton>
-               <ActionButton className="ml-auto aspect-square min-w-fit md:aspect-auto [&>*]:hover:opacity-100">
-                  <RxDotsHorizontal className="scale-[1.1] transform fill-white opacity-80" />
-               </ActionButton>
+               <Link href={`/post/${props.id}`}>
+                  <ActionButton className="ml-auto aspect-square min-w-fit md:aspect-auto [&>*]:hover:opacity-100">
+                     <RxDotsHorizontal className="scale-[1.1] transform fill-white opacity-80" />
+                  </ActionButton>
+               </Link>
             </div>
          </div>
       </motion.div>

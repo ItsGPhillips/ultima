@@ -25,11 +25,17 @@ const GET_POSTS_SCHEMA = z
    })
    .and(GET_POST_VARIANTS);
 
-const GET_VOTES_SCHEMA = z.object({
+const GET_POST_SCHEMA = z.object({
    postId: z.string(),
 });
 
 export const postsRouter = router({
+   getPost: procedure.input(GET_POST_SCHEMA).query(async ({ input }) => {
+      const data = await db.query.post.findFirst({
+         where: (post, { eq }) => eq(post.id, input.postId),
+      });
+      return data ?? null;
+   }),
    getPosts: procedure.input(GET_POSTS_SCHEMA).query(async ({ input }) => {
       let query = db
          .select({ postedAt: schema.post.postedAt })
@@ -131,12 +137,12 @@ export const postsRouter = router({
          }
       }),
 
-   getVotes: procedure.input(GET_VOTES_SCHEMA).query(async ({ input }) => {
+   getVotes: procedure.input(GET_POST_SCHEMA).query(async ({ input }) => {
       const [data] = await db
          .select({ votes: schema.post.votes })
          .from(schema.post)
          .where(eq(schema.post.id, input.postId));
-         
+
       if (!data) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       return data;
    }),
@@ -197,5 +203,26 @@ export const postsRouter = router({
             Log.error(e);
             throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
          }
+      }),
+
+   getComments: procedure
+      .input(
+         z.object({
+            postId: z.string(),
+            parentId: z.number().nullable(),
+         })
+      )
+      .query(async ({ input }) => {
+         let filters = [eq(schema.comment.postId, input.postId)];
+
+         if (input.parentId === null) {
+            filters.push(sql`${schema.comment.parentId} IS NULL`);
+         } else {
+            filters.push(eq(schema.comment.parentId, input.parentId));
+         }
+
+         return await db.query.comment.findMany({
+            where: () => and(...filters),
+         });
       }),
 });
