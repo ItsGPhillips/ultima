@@ -16,6 +16,8 @@ import { EditorContent } from "@tiptap/react";
 import NextImage from "next/image";
 import { motion } from "framer-motion";
 import Color from "color";
+import { usePress } from "react-aria";
+import { useRouter } from "next/navigation";
 
 export const PostInfo = (props: PostType) => {
    const { data: accentColor } = usePageAccentColor({
@@ -116,11 +118,19 @@ export const PostBody = (props: PostType) => {
 };
 
 export const Post = (props: PropsWithChildren<PostType>) => {
+   const router = useRouter();
+   const { pressProps } = usePress({
+      onPress: () => {
+         router.push(`/post/${props.id}`);
+      },
+   });
+
    return (
       <motion.div
          layout
-         className="isolate z-[400] flex rounded-md outline-[1px] outline-white/50 hover:outline"
+         className="isolate z-[400] flex rounded-md outline-[1px] outline-white/50 hover:outline cursor-pointer"
          style={{ overflowAnchor: "none" }}
+         {...(pressProps as any)}
       >
          <VoteButtonGroup
             postId={props.id}
@@ -131,12 +141,14 @@ export const Post = (props: PropsWithChildren<PostType>) => {
             <PostBody {...props} />
             <div className="flex w-full items-stretch gap-2 border-t-[1px] border-white/20 md:gap-4">
                <VoteButtonGroup postId={props.id} className="flex md:hidden" />
-               <ActionButton className="group relative aspect-square min-w-fit md:aspect-auto [&>*]:hover:opacity-100">
-                  <LuMessageSquare className="scale-[1.2] transform stroke-white opacity-80" />
-                  <span className="hidden whitespace-nowrap text-xs text-white opacity-60 md:ml-2 md:block">
-                     123 Comments
-                  </span>
-               </ActionButton>
+               <Link href={`/post/${props.id}`}>
+                  <ActionButton className="group relative aspect-square min-w-fit md:aspect-auto [&>*]:hover:opacity-100">
+                     <LuMessageSquare className="scale-[1.2] transform stroke-white opacity-80" />
+                     <span className="hidden whitespace-nowrap text-xs text-white opacity-60 md:ml-2 md:block">
+                        123 Comments
+                     </span>
+                  </ActionButton>
+               </Link>
                <ActionButton className="aspect-square min-w-fit md:aspect-auto [&>*]:hover:opacity-100">
                   <LuPin className="scale-[1.1] transform stroke-white opacity-80" />
                   <span className="hidden whitespace-nowrap text-xs text-white opacity-60 md:ml-2 md:block">
@@ -149,11 +161,9 @@ export const Post = (props: PropsWithChildren<PostType>) => {
                      Share
                   </span>
                </ActionButton>
-               <Link href={`/post/${props.id}`}>
-                  <ActionButton className="ml-auto aspect-square min-w-fit md:aspect-auto [&>*]:hover:opacity-100">
-                     <RxDotsHorizontal className="scale-[1.1] transform fill-white opacity-80" />
-                  </ActionButton>
-               </Link>
+               <ActionButton className="ml-auto aspect-square min-w-fit md:aspect-auto [&>*]:hover:opacity-100">
+                  <RxDotsHorizontal className="scale-[1.1] transform fill-white opacity-80" />
+               </ActionButton>
             </div>
          </div>
       </motion.div>
