@@ -121,7 +121,7 @@ export const Post = (props: PropsWithChildren<PostType>) => {
    const router = useRouter();
    const { pressProps } = usePress({
       onPress: () => {
-         router.push(`/post/${props.id}`);
+         router.push(`/page/${props.id}`);
       },
    });
 
