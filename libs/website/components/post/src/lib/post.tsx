@@ -26,23 +26,17 @@ export const PostInfo = (props: PostType) => {
 
    return (
       <div className="flex items-center gap-2">
-         <Link href={`page/${props.handle}`}>
+         <Link href={`page/${props.posterHandle}`}>
             <Avatar
                color={new Color(accentColor ?? "#ffffff4d")}
-               name={props.handle}
+               name={props.posterHandle}
                className="float-left block h-8 w-8"
             />
          </Link>
          <div className="flex flex-col justify-center">
             <div className="flex items-center gap-2">
-               <Link href={`page/${props.handle}`} className="text-link">
-                  <span className="whitespace-nowrap text-sm">
-                     {props.handle}
-                  </span>
-               </Link>
                {props.posterHandle !== props.handle && (
                   <>
-                     <Seperator.Dot />
                      <Link
                         href={`page/${props.posterHandle}`}
                         className="text-link"
@@ -51,8 +45,14 @@ export const PostInfo = (props: PostType) => {
                            {props.posterHandle}
                         </span>
                      </Link>
+                     <Seperator.Dot />
                   </>
                )}
+               <Link href={`page/${props.handle}`} className="text-link">
+                  <span className="whitespace-nowrap text-sm">
+                     {props.handle}
+                  </span>
+               </Link>
             </div>
             <div className="text-xs text-white/50">
                {formatDistanceToNowStrict(new Date(props.postedAt), {
